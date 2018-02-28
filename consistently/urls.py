@@ -5,4 +5,5 @@ from django.urls import include, path
 urlpatterns = [
     url(r'^_ad/', admin.site.urls),
     path(r'test/', include('consistently.apps.repos.urls')),
+    path('', include('social_django.urls', namespace='social')),
 ]

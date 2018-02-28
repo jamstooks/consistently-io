@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    'social_django',
+    
     'consistently',
     'consistently.apps.repos',
 ]
@@ -66,6 +68,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -126,3 +131,19 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(PROJECT_DIR, 'static'),
 )
+
+AUTHENTICATION_BACKENDS = (
+    # 'social_core.backends.open_id.OpenIdAuth',
+    'social_core.backends.github.GithubOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_GITHUB_KEY = 'fd4e19fb50f00ad46b49'
+SOCIAL_AUTH_GITHUB_SECRET = '8a548d08d314f7b0e4a90bbb1cfa1efe04a9ec1c'
+SOCIAL_AUTH_GITHUB_SCOPE = ['read:org', ]
+
+# github will need updated from dev environment
+# https://github.com/settings/applications/677341
+
+# When using postgres
+# SOCIAL_AUTH_POSTGRES_JSONFIELD = True
