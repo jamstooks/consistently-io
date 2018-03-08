@@ -1,10 +1,9 @@
-from django.contrib.auth.models import AnonymousUser, User
-from django.test import Client, TestCase, RequestFactory
+from django.contrib.auth.models import User
+from django.test import Client, TestCase
 from django.urls import reverse
 from social_django.models import UserSocialAuth
 
 from consistently.apps.repos.models import Repository
-from consistently.apps.repos.views import UserRepoListView
 
 
 TEST_USERNAME = 'jamstooks'
