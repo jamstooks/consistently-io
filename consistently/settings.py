@@ -15,7 +15,7 @@ import consistently as project_module
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROJECT_DIR = os.path.dirname(os.path.realpath(project_module.__file__))
+PROJECT_DIR = os.path.join(BASE_DIR, 'consistently')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -24,7 +24,7 @@ PROJECT_DIR = os.path.dirname(os.path.realpath(project_module.__file__))
 SECRET_KEY = 'jqw!s7t7^88&enk)1bll$w8rx31yd6v7z01#0jw@2xn!1b*)+r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', False)
 
 ALLOWED_HOSTS = ['*', ]
 
@@ -127,23 +127,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = (
     os.path.join(PROJECT_DIR, 'static'),
 )
 
 AUTHENTICATION_BACKENDS = (
-    # 'social_core.backends.open_id.OpenIdAuth',
     'social_core.backends.github.GithubOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
-SOCIAL_AUTH_GITHUB_KEY = 'fd4e19fb50f00ad46b49'
-SOCIAL_AUTH_GITHUB_SECRET = '8a548d08d314f7b0e4a90bbb1cfa1efe04a9ec1c'
+SOCIAL_AUTH_GITHUB_KEY = os.environ.get('GITHUB_KEY', None)
+SOCIAL_AUTH_GITHUB_SECRET = os.environ.get('GITHUB_SECRET', None)
 SOCIAL_AUTH_GITHUB_SCOPE = ['read:org', ]
 
-# github will need updated from dev environment
+# github will need to be updated for dev environment
 # https://github.com/settings/applications/677341
 
 # When using postgres
-# SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+SOCIAL_AUTH_POSTGRES_JSONFIELD = os.environ.get('SOCIAL_AUTH_POSTGRES_JSONFIELD', False)
