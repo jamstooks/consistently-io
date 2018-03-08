@@ -5,8 +5,11 @@ from social_django.models import UserSocialAuth
 
 from consistently.apps.repos.models import Repository
 
+import os
+
 
 TEST_USERNAME = 'jamstooks'
+TEST_GITHUB_TOKEN = os.environ.get('TEST_GITHUB_TOKEN')
 
 
 class RepoListTestCase(TestCase):
@@ -30,7 +33,7 @@ class RepoListTestCase(TestCase):
             provider='github',
             uid='',
             extra_data={
-                'access_token': 'a5503b76904f8fa2c51efabc92a1155a437a7ced'})
+                'access_token': TEST_GITHUB_TOKEN})
         usa.save()
         
         self.url = reverse('repos:user-repo-list', args=(TEST_USERNAME, ))
