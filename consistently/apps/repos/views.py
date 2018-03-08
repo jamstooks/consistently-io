@@ -12,6 +12,7 @@ class UserRepoListView(TemplateView):
         
         connected_repos = Repository.objects.filter(
             username=kwargs['github_user'])
+        # import pdb; pdb.set_trace()
         context['connected_repos'] = connected_repos
         context['unconnected_repos'] = []
         
