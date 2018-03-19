@@ -1,43 +1,17 @@
-from django.contrib.auth.models import User
-from django.test import Client, TestCase
 from django.urls import reverse
-from social_django.models import UserSocialAuth
-
 from consistently.apps.repos.models import Repository
 
-import os
+from .base import BaseTestCase
 
 
-TEST_USERNAME = 'jamstooks'
-TEST_GITHUB_TOKEN = os.environ.get('TEST_GITHUB_TOKEN')
-
-
-class RepoListTestCase(TestCase):
+class RepoListTestCase(BaseTestCase):
     
     def setUp(self):
         """
-            Create a test repo and a user.
+            Set the url
         """
-        
-        self.repo = Repository(
-            github_id=1, name='test', username=TEST_USERNAME)
-        self.repo.save()
-        
-        self.user = User.objects.create(
-            username=TEST_USERNAME, password='secret',)
-        self.user.set_password('secret') 
-        self.user.save()
-        
-        usa = UserSocialAuth(
-            user=self.user,
-            provider='github',
-            uid='',
-            extra_data={
-                'access_token': TEST_GITHUB_TOKEN})
-        usa.save()
-        
-        self.url = reverse('repos:user-repo-list', args=(TEST_USERNAME, ))
-        self.client = Client()
+        super(RepoListTestCase, self).setUp()
+        self.url = reverse('repos:user-repo-list', args=(self.user.username, ))
 
     def test_other_user(self):
         """
@@ -53,7 +27,7 @@ class RepoListTestCase(TestCase):
         """
             An authenticated user should see his/her own repo
         """
-        login = self.client.login(username=TEST_USERNAME, password='secret') 
+        self.login_client() 
         response = self.client.get(self.url)
         self.assertEqual(
             response.context['unconnected_repos'].__class__.__name__,

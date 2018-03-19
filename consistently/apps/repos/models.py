@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from model_utils.models import TimeStampedModel
 
@@ -16,11 +17,13 @@ class Repository(TimeStampedModel):
     
     # The name and username are stored for quick lookup
     # but changing a name or switching users shouldn't break the system
+    # could listen to hooks about repo owner changes
     # @todo they should be updated frequently
     # on commits? nightly? on user `refresh` actions? tbd...
     name = models.CharField(max_length=128)
-    username = models.CharField(max_length=64, unique=True)
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='repos')
     
     class Meta:
-        index_together = ["name", "username"]
-        unique_together = (("name", "username"),)
+        index_together = ["name", "owner"]
+        unique_together = (("name", "owner"),)

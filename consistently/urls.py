@@ -8,6 +8,12 @@ urlpatterns = [
         'test/',
         include('consistently.apps.repos.urls', namespace='repos')),
     path(
+        'api/',
+        include('consistently.apps.api.urls', namespace='api')),
+    path(
         '',
         include('social_django.urls', namespace='social')),
+    url(
+        r'^api-auth/',
+        include('rest_framework.urls', namespace='rest_framework'))
 ]

@@ -3,6 +3,7 @@ from github import Github
 
 from .models import Repository
 
+
 class UserRepoListView(TemplateView):
 
     template_name = "repos/base.html"
@@ -11,7 +12,7 @@ class UserRepoListView(TemplateView):
         context = super().get_context_data(**kwargs)
         
         connected_repos = Repository.objects.filter(
-            username=kwargs['github_user'])
+            owner__username=kwargs['github_user'])
         # import pdb; pdb.set_trace()
         context['connected_repos'] = connected_repos
         context['unconnected_repos'] = []
@@ -29,7 +30,7 @@ class UserRepoListView(TemplateView):
             g = Github(token)
             user = g.get_user()
             repo_list = user.get_repos()
-            # i was going to remove these here, but given the
+            # i was going to remove the connected repos here, but given the
             # `github.PaginatedList.PaginatedList` object it might be
             # easier to remove this in the template @todo - think about.
             context['unconnected_repos'] = repo_list

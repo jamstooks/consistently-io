@@ -46,7 +46,12 @@
       <div class="jumbotron">
         <p><a href="{% url "social:begin" "github" %}">Github!</a></p>
         <p><pre>{{ backends.associated.0 }}</pre></p>
-        {% for repo in repo_list %}
+        <h2>Connected</h2>
+        {% for repo in connected_repos %}
+          <p>{{ repo.full_name }}</p>
+        {% endfor %}
+        <h2>Unconnected</h2>
+        {% for repo in unconnected_repos %}
           <p>{{ repo.full_name }}</p>
         {% endfor %}
       </div>
