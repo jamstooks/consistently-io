@@ -1,11 +1,10 @@
 from django.urls import reverse
-from consistently.apps.repos.models import Repository
 
 from .base import BaseTestCase
 
 
 class RepoListTestCase(BaseTestCase):
-    
+
     def setUp(self):
         """
             Set the url
@@ -22,12 +21,12 @@ class RepoListTestCase(BaseTestCase):
         response = self.client.get(self.url)
         self.assertEqual(len(response.context['unconnected_repos']), 0)
         self.assertEqual(len(response.context['connected_repos']), 1)
-    
+
     def test_current_user(self):
         """
             An authenticated user should see his/her own repo
         """
-        self.login_client() 
+        self.login_client()
         response = self.client.get(self.url)
         self.assertEqual(
             response.context['unconnected_repos'].__class__.__name__,

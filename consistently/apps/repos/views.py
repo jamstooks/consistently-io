@@ -10,20 +10,19 @@ class UserRepoListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
+
         connected_repos = Repository.objects.filter(
             owner__username=kwargs['github_user'])
-        # import pdb; pdb.set_trace()
         context['connected_repos'] = connected_repos
         context['unconnected_repos'] = []
-        
+
         # this bit might get extracted to a parent class...
         user_is_owner = False
         if self.request.user.is_authenticated:
             if self.request.user.username == kwargs['github_user']:
                 user_is_owner = True
         context['user_is_owner'] = user_is_owner
-        
+
         if user_is_owner:
             github = self.request.user.social_auth.get(provider='github')
             token = github.extra_data['access_token']
