@@ -141,6 +141,7 @@ AUTHENTICATION_BACKENDS = (
 SOCIAL_AUTH_GITHUB_KEY = os.environ.get('GITHUB_KEY', None)
 SOCIAL_AUTH_GITHUB_SECRET = os.environ.get('GITHUB_SECRET', None)
 SOCIAL_AUTH_GITHUB_SCOPE = ['read:org', ]
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/g/'
 
 # github will need to be updated for dev environment
 # https://github.com/settings/applications/677341

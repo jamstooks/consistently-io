@@ -1,1 +1,15 @@
 {% extends "base.html" %}
+
+{% block content %}
+  <div class="jumbotron">
+    <p><pre>{{ backends.associated.0 }}</pre></p>
+    <h2>Connected</h2>
+    {% for repo in connected_repos %}
+      <p>{{ repo.full_name }}</p>
+    {% endfor %}
+    <h2>Unconnected</h2>
+    {% for repo in unconnected_repos %}
+      <p>{{ repo.full_name }}</p>
+    {% endfor %}
+  </div>
+{% endblock %}

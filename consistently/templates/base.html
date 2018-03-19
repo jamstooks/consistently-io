@@ -31,30 +31,34 @@
         <li class="nav-item">
           <a class="nav-link disabled" href="#">Disabled</a>
         </li>
+        {% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#" id="authdrop"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false">
+              {{ user.username }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="authdrop">
+              <a class="dropdown-item" href="{% url 'logout' %}">Sign out</a>
+            </div>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="dropdown-item" href="{% url 'social:begin' 'github' %}">Sign in with Github</a>
+          </li>
+        {% endif %}
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-          <div class="dropdown-menu" aria-labelledby="dropdown10">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
+          
+          
         </li>
       </ul>
     </nav>
 
     <main role="main" class="container">
-      <div class="jumbotron">
-        <p><a href="{% url "social:begin" "github" %}">Github!</a></p>
-        <p><pre>{{ backends.associated.0 }}</pre></p>
-        <h2>Connected</h2>
-        {% for repo in connected_repos %}
-          <p>{{ repo.full_name }}</p>
-        {% endfor %}
-        <h2>Unconnected</h2>
-        {% for repo in unconnected_repos %}
-          <p>{{ repo.full_name }}</p>
-        {% endfor %}
-      </div>
+      {% block content %}{% endblock %}
     </main>
 
     <!-- Bootstrap core JavaScript
