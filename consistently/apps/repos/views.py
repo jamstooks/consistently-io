@@ -18,21 +18,18 @@ class HomeView(TemplateView):
             return redirect(url)
         
         return super(HomeView, self).get(request, *args, **kwargs)
-        # except Http404:
-        #     # redirect here
-        #     return redirect(url)
-        # context = self.get_context_data(object=self.object)
-        # return self.render_to_response(context)
 
-    
 
 class UserRepoListView(TemplateView):
 
-    template_name = "repos/base.html"
+    template_name = "repos/repo_list.html"
 
     def get_context_data(self, **kwargs):
+        
         context = super().get_context_data(**kwargs)
         git_user = kwargs['github_user']
+        
+        context['repo_list_api_url'] = reverse('api:repository-list')
 
         connected_repos = Repository.objects.filter(
             owner__username=kwargs['github_user'])

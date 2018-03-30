@@ -1,0 +1,37 @@
+{% extends "repos/base.html" %} {% block content %}
+
+{% load static %}
+{% load render_bundle from webpack_loader %}  
+
+<div class="jumbotron">
+  {% comment %}
+  <h2>Connected</h2>
+  {% for repo in connected_repos %}
+  <p>{{ repo.full_name }}</p>
+  {% endfor %}
+  <h2>Unconnected</h2>
+  {% for repo in unconnected_repos %}
+  <div class='repo-in-list'>
+    <h3>{{ repo.full_name }}</h3>
+    <input
+      type="checkbox"
+      data-repo-name="{{ repo.full_name }}"
+      data-api-url="{{ repo_list_api_url }}"
+      class="repo-toggle">
+  </div>
+  <p>{{ repo.full_name }}</p>
+  {% endfor %}
+  {% endcomment %}
+  
+  <div id="app"></div>
+</div>
+<hr>
+{% endblock %}
+
+{% block js %}
+  {{ block.super }}
+  
+  {% render_bundle 'manifest' %}
+  {% render_bundle 'vendor' %}
+  {% render_bundle 'app' %}
+{% endblock %}

@@ -16,6 +16,7 @@ import consistently as project_module
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_DIR = os.path.join(BASE_DIR, 'consistently')
+VUE_DIR = os.path.join(PROJECT_DIR, 'vue')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     
     'rest_framework',
     'social_django',
+    'webpack_loader',
     
     'consistently',
     'consistently.apps.api',
@@ -130,8 +132,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
+    os.path.join(VUE_DIR, 'dist', 'static'),
     os.path.join(PROJECT_DIR, 'static'),
 )
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.github.GithubOAuth2',
@@ -148,3 +152,10 @@ SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/g/'
 
 # When using postgres
 SOCIAL_AUTH_POSTGRES_JSONFIELD = os.environ.get('SOCIAL_AUTH_POSTGRES_JSONFIELD', False)
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': os.path.join(VUE_DIR, 'dist'),
+        'STATS_FILE': os.path.join(VUE_DIR, 'webpack-stats.json'),
+    }
+}

@@ -7,7 +7,8 @@ class RepositorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Repository
         fields = (
-            'github_id', 'last_commit', 'last_commit_name', 'name', 'owner')
+            'id', 'github_id', 'last_commit',
+            'last_commit_name', 'name', 'owner')
 
 
 class RepoCreateSerializer(serializers.ModelSerializer):
