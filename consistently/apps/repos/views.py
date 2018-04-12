@@ -7,52 +7,79 @@ from .models import Repository
 
 
 class HomeView(TemplateView):
-    
+
     template_name = 'repos/home.html'
-    
+
     def get(self, request, *args, **kwargs):
         if self.request.user.is_authenticated:
             url = reverse(
-                    'repos:user-repo-list',
-                    args=(self.request.user.username, ))
+                'repos:user-repo-list',
+                args=(self.request.user.username, ))
             return redirect(url)
-        
+
         return super(HomeView, self).get(request, *args, **kwargs)
 
 
-class UserRepoListView(TemplateView):
+class PrefixRepoListView(TemplateView):
+    """
+        Shows the list of currently connected repos
+        for a given user (or team, hence prefix)
+    """
 
     template_name = "repos/repo_list.html"
 
     def get_context_data(self, **kwargs):
-        
         context = super().get_context_data(**kwargs)
-        git_user = kwargs['github_user']
-        
-        context['repo_list_api_url'] = reverse('api:repository-list')
+
+        #@todo - confirm github prefix exists?
+
+        context['github_prefix'] = kwargs['github_prefix']
 
         connected_repos = Repository.objects.filter(
-            owner__username=kwargs['github_user'])
+            prefix=kwargs['github_prefix'])
         context['connected_repos'] = connected_repos
-        context['unconnected_repos'] = []
 
-        # this bit might get extracted to a parent class...
-        user_is_owner = False
-        if self.request.user.is_authenticated:
-            if self.request.user.username == git_user:
-                user_is_owner = True
-        context['user_is_owner'] = user_is_owner
+        return context
 
-        if user_is_owner:
-            # @todo - look into caching this and having a refresh button
-            github = self.request.user.social_auth.get(provider='github')
-            token = github.extra_data['access_token']
-            g = Github(token)
-            user = g.get_user()
-            repo_list = user.get_repos()
-            # i was going to remove the connected repos here, but given the
-            # `github.PaginatedList.PaginatedList` object it might be
-            # easier to remove this in the template @todo - think about.
-            context['unconnected_repos'] = repo_list
+
+class ProfileView(TemplateView):
+    """
+        Where a user configures his/her connected repositories
+
+        @todo
+            - permissions: auth required, access to github repos
+    """
+    template_name = "repos/profile.html"
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+
+        prefix = kwargs['github_prefix']
+        context['prefix'] = prefix
+
+        github = self.request.user.social_auth.get(provider='github')
+        token = github.extra_data['access_token']
+        g = Github(token)
+        named_user = g.get_user(prefix)
+        auth_user = g.get_user()
+        github_repo_list = named_user.get_repos()
+
+        context['github_org_list'] = auth_user.get_orgs()
+
+        connected_repo_id_list = Repository.objects.filter(
+            prefix=prefix).values_list('github_id', flat=True)
+
+        repo_list = []
+        for repo in github_repo_list:
+            repo_list.append({
+                'github_id': repo.id,
+                'name': repo.name,
+                'full_name': repo.full_name,
+                'is_connected': repo.id in connected_repo_id_list
+            })
+
+        context['repo_list'] = repo_list
+        context['repo_list_api_url'] = reverse('api:repository-list')
 
         return context

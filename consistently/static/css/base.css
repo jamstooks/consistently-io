@@ -1,3 +1,81 @@
 body {
-  background-color: lightgrey;
+  background-color: white;
+  font-family: 'Fjalla One', sans-serif;
+  padding-bottom: 0;
+}
+
+.navbar {
+    background-color: whitesmoke;
+    line-height: 2.5;
+    border-bottom: 1px solid lightgrey;
+}
+
+.logo {
+    height: 4em;
+}
+
+h1 {
+    margin-bottom: 1em;
+}
+
+.repo-box {
+    background-color: WhiteSmoke;
+    color: dimgrey;
+    margin-bottom: .7em;
+    font-size: 1.6em;
+    line-height: 2.5;
+}
+
+.repo-box-status {
+    text-align: center;
+    font-size: 2.2em;
+    line-height: 1.1;
+    cursor: pointer;
+}
+
+.repo-box-status-unconnected {
+    background-color: darkgrey;
+    color: grey;
+}
+
+.repo-box-status-unconnected:hover {
+    /*background-color: lightgrey;*/
+    /*color: dimgrey;*/
+    color: lightgrey;
+}
+
+.repo-box-status-connected {
+    background-color: #b6d7a8;
+    color: #6aa84f;
+}
+
+.repo-box-status-connected:hover {
+    background-color: #b6d7a8;
+    color: #38761d;
+}
+
+.repo-box-settings {
+    font-size: 1.6em;
+    line-height: 1.6;
+    cursor: pointer;
+}
+
+.repo-box-settings:hover {
+    color: #444;
+}
+
+footer {
+    background-color: #eee;
+    padding: 3em 5em;
+    margin: 2em 0 0 0;
+    font-size: .8em;
+    text-align: right;
+    font-family: 'Roboto', sans-serif;
+    color: darkgrey;
+}
+
+footer .brand {
+    font-size: 2em;
+    font-family: 'Pacifico', sans-serif;
+    color: darkgrey;
 }

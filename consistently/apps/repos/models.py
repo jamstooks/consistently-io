@@ -12,6 +12,10 @@ class Repository(TimeStampedModel):
     ... or should disconnection remove the repo altogether?
     """
     github_id = models.PositiveIntegerField(unique=True)
+    full_name = models.CharField(max_length=140, unique=True)
+    prefix = models.CharField(max_length=40)
+    name = models.CharField(max_length=100)
+
     last_commit = models.DateTimeField(blank=True, null=True)
     last_commit_name = models.CharField(max_length=40, blank=True, null=True)
 
@@ -20,10 +24,5 @@ class Repository(TimeStampedModel):
     # could listen to hooks about repo owner changes
     # @todo they should be updated frequently
     # on commits? nightly? on user `refresh` actions? tbd...
-    name = models.CharField(max_length=128)
-    owner = models.ForeignKey(
+    added_by = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='repos')
-
-    class Meta:
-        index_together = ["name", "owner"]
-        unique_together = (("name", "owner"),)

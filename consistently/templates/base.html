@@ -14,18 +14,23 @@
 
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+  
+  <link href="https://fonts.googleapis.com/css?family=Fjalla+One|Pacifico|Roboto" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/font/octicons.min.css" integrity="sha256-pNGG0948CVwfHxxS8lVkUKftaSsMBzFSUknrKr2utfY=" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+  
   <!-- Custom styles -->
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
   
+  {% block extra_css %}{% endblock %}
 </head>
 
 <body>
 
-  <nav class="navbar navbar-expand-md justify-content-md-center navbar-light bg-light mb-4" id="navbarsExample10">
+  <nav class="navbar navbar-expand-md justify-content-md-center navbar-light mb-4" id="navbarsExample10">
     <ul class="navbar-nav">
       <li class="nav-item active">
-        <a class="nav-link" href="#">Centered nav only <span class="sr-only">(current)</span></a>
+        <img src="{% static 'img/logo.svg' %}" class="logo">
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">Link</a>
@@ -39,6 +44,7 @@
               {{ user.username }}
             </a>
         <div class="dropdown-menu" aria-labelledby="authdrop">
+          <a class="dropdown-item" href="{% url 'repos:profile' user.username %}">Profile</a>
           <a class="dropdown-item" href="{% url 'logout' %}">Sign out</a>
         </div>
       </li>
@@ -53,6 +59,14 @@
   <main role="main" class="container">
     {% block content %}{% endblock %}
   </main>
+  
+  
+    <footer>
+      <p>
+        Another Simple Production by<br>
+        <a href="#" class="brand">B.W. Stooks</a>
+      </p>
+    </footer>
 
   <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -61,6 +75,9 @@
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  {% endblock %}
+  {% block extra_js %}
+  <script src="{% static 'vendor/toggle-onoff.js' %}"></script>
   {% endblock %}
 </body>
 

@@ -12,22 +12,29 @@ class RepoListTestCase(BaseTestCase):
         super(RepoListTestCase, self).setUp()
         self.url = reverse('repos:user-repo-list', args=(self.user.username, ))
 
-    def test_other_user(self):
+    def test_list(self):
         """
-            Other or anon users should see just a list
-            of public connected repos for the user.
+            We should have a list of connected repositories
         """
         # @todo - test with one logged in user on another user.
         response = self.client.get(self.url)
-        self.assertEqual(len(response.context['unconnected_repos']), 0)
         self.assertEqual(len(response.context['connected_repos']), 1)
 
-    def test_current_user(self):
+
+class ProfileTestCase(BaseTestCase):
+
+    def setUp(self):
         """
-            An authenticated user should see his/her own repo
+            Set the url
+        """
+        super(ProfileTestCase, self).setUp()
+        self.url = reverse('repos:profile', args=(self.user.username, ))
+
+    def test_list(self):
+        """
+            We should have a list of githu repositories
         """
         self.login_client()
+        # @todo - test permissions
         response = self.client.get(self.url)
-        self.assertEqual(
-            response.context['unconnected_repos'].__class__.__name__,
-            'PaginatedList')
+        # self.assertEqual(len(response.context['connected_repos']), 1)

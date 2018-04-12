@@ -11,5 +11,9 @@ router = DefaultRouter()
 router.register(r'repos', views.RepositoryViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls))
+    url(r'^', include(router.urls)),
+    url(
+        r'^unconnected-repos/',
+        views.GithubReposView.as_view(),
+        name='unconnected-repos'),
 ]

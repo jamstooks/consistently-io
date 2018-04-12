@@ -1,0 +1,55 @@
+{% extends "repos/base.html" %}
+
+{% block extra_css %}{% endblock %}
+
+{% block content %}
+  
+  <h1>Profile: {{ prefix }}</h1>
+      
+  <div class="row">
+    <div class="col-lg-10 offset-lg-1 col-md">
+      
+      {% if repo_list %}
+
+        {% for repo in repo_list %}
+        
+          <div class="repo-box row">
+            <div class="col-sm-9">
+              <span class="repo-box-name">
+                {{ repo.name }}
+                <!--<span class="octicon octicon-mark-github"></span>-->
+              </span>
+            {% if repo.is_connected %}
+              <span class="repo-box-settings octicon octicon-gear float-right"></span>
+            {% endif %}
+            </div>
+            <div class="
+              col-sm-3
+              repo-box-status
+              {% if repo.is_connected %}
+              repo-box-status-connected
+              {% else %}
+              repo-box-status-unconnected
+              {% endif %}">
+              <i
+                class="fa
+                {% if repo.is_connected %}
+                fa-toggle-on
+                {% else %}
+                fa-toggle-off
+                {% endif %}"></i>
+            </div>
+          </div>
+          
+        {% endfor %}
+        
+      {% else %}
+      
+        <p>No Connected Repositories</p>
+        
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}{% endblock %}

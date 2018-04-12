@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^_ad/', admin.site.urls),
     path(
         'api/',
-        include('consistently.apps.api.urls')),
+        include('consistently.apps.api.urls', namespace='api')),
     path(
         'g/',
         include('consistently.apps.repos.urls')),

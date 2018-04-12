@@ -8,7 +8,7 @@ from consistently.apps.repos.models import Repository
 
 TEST_USERNAME = 'jamstooks'
 TEST_GITHUB_TOKEN = os.environ.get('TEST_GITHUB_TOKEN')
-TEST_GITHUB_REPO = os.environ.get('TEST_GITHUB_REPO', 'django-acme-challenge')
+TEST_GITHUB_REPO_ID = os.environ.get('TEST_GITHUB_REPO_ID', 14995323)
 
 
 class BaseTestCase(TestCase):
@@ -24,7 +24,11 @@ class BaseTestCase(TestCase):
         self.user.save()
 
         self.repo = Repository(
-            github_id=1, name='test', owner=self.user)
+            github_id=1,
+            name='test',
+            prefix=self.user.username,
+            added_by=self.user,
+            full_name="%s/%s" % ('test', self.user.username))
         self.repo.save()
 
         usa = UserSocialAuth(

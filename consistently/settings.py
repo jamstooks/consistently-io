@@ -40,9 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    # 'django_extensions',
     'rest_framework',
     'social_django',
-    'webpack_loader',
     
     'consistently',
     'consistently.apps.api',
@@ -152,10 +152,3 @@ SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/g/'
 
 # When using postgres
 SOCIAL_AUTH_POSTGRES_JSONFIELD = os.environ.get('SOCIAL_AUTH_POSTGRES_JSONFIELD', False)
-
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'BUNDLE_DIR_NAME': os.path.join(VUE_DIR, 'dist'),
-        'STATS_FILE': os.path.join(VUE_DIR, 'webpack-stats.json'),
-    }
-}
