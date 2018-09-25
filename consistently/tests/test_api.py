@@ -2,66 +2,54 @@ from json import loads
 from django.urls import reverse
 from rest_framework.test import APIClient
 
-from .base import BaseTestCase, TEST_GITHUB_REPO_ID
+from .base import BaseTestCase
 from consistently.apps.repos.models import Repository
+from consistently.apps.integrations.models import Integration, INTEGRATION_TYPES
+from consistently.apps.integrations.types.html.models import HTMLValidation
 
 
-class RepoListTestCase(BaseTestCase):
+class BaseAPITestCase(BaseTestCase):
+    """
+    Only authenticated users have access to the api
+    """
 
     def setUp(self):
-        """
-            Set the url and api client
-        """
-        super(RepoListTestCase, self).setUp()
-
+        super(BaseAPITestCase, self).setUp()
         self.client = APIClient()
-        self.url = reverse('api:repository-list')
-
-    def test_list(self):
-
-        response = self.client.get(self.url, format='json')
-        data = loads(response.content)
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['name'], 'test')
-
-    def test_create_and_delete(self):
-
         self.login_client()
+        self.restricted_methods = [self.client.get]
 
-        response = self.client.post(
-            self.url,
-            {'github_id': TEST_GITHUB_REPO_ID, },
-            format='json')
-        data = loads(response.content)
-        self.assertEqual(data['github_id'], TEST_GITHUB_REPO_ID)
+    def test_auth(self):
+        """
+            only authenticated users have access
+        """
+        self.client.logout()
+        if hasattr(self, 'url'):
+            response = self.client.get(self.url, format='json')
+            self.assertEqual(response.status_code, 403)
+            data = loads(response.content)
+            self.assertEqual(
+                data['detail'], 'Authentication credentials were not provided.')
 
-        response = self.client.get(self.url, format='json')
-        data = loads(response.content)
-        self.assertEqual(len(data), 2)
+    def test_permissions(self):
+        """
+        API requests for private repos or repos that don't belong
+        to a user should be denied
+        """
+        if hasattr(self, 'private_url'):
+            for m in self.restricted_methods:
+                response = m(self.private_url, format='json')
+                self.assertEqual(response.status_code, 403)
 
-        repo = Repository.objects.get(github_id=TEST_GITHUB_REPO_ID)
-
-        del_url = reverse('api:repository-detail', args=[repo.id])
-        response = self.client.delete(del_url, format='json')
-        self.assertEqual(response.status_code, 204)
-
-        response = self.client.get(self.url, format='json')
-        data = loads(response.content)
-        self.assertEqual(len(data), 1)
-
-        # test invalid repo
-        response = self.client.post(
-            self.url,
-            {'github_id': '0'},
-            format='json')
-        data = loads(response.content)
-        self.assertEqual(
-            data['non_field_errors'], ['No matching repo on Github'])
+        if hasattr(self, 'restricted_url'):
+            for m in self.restricted_methods:
+                response = m(self.restricted_url, format='json')
+                self.assertEqual(response.status_code, 403)
 
 
-class GithubReposTestCase(BaseTestCase):
+class GithubReposTestCase(BaseAPITestCase):
     """
-    Test the view that shows a user's github repos
+    Test the view that provides a user's github repos
     """
 
     def setUp(self):
@@ -69,19 +57,7 @@ class GithubReposTestCase(BaseTestCase):
             Set the url and api client
         """
         super(GithubReposTestCase, self).setUp()
-
-        self.client = APIClient()
-        self.url = reverse('api:unconnected-repos')
-
-    def test_perms(self):
-        """
-            only authenticated users have access
-        """
-        response = self.client.get(self.url, format='json')
-        data = loads(response.content)
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(
-            data['detail'], 'Authentication credentials were not provided.')
+        self.url = reverse('api:profile-repos')
 
     def test_list(self):
 
@@ -89,4 +65,176 @@ class GithubReposTestCase(BaseTestCase):
         response = self.client.get(self.url, format='json')
         data = loads(response.content)
         self.assertGreater(len(data), 0)
-        self.assertTrue('full_name' in data[0])
+        self.assertTrue('prefix' in data[0])
+        # this assumes that two of the three test repos belong to the
+        # authenticated user, but one is private
+        self.assertEqual(len(data) + 2, Repository.objects.count())
+
+        # make sure the private repo wasn't returned
+        for r in data:
+            self.assertNotEqual(r['github_id'], self.private_repo.github_id)
+
+
+class ToggleRepoTestCase(BaseAPITestCase):
+    """
+    Test the view that toggles `is_active` status for each repo
+    """
+
+    def setUp(self):
+        """
+            Set the url and api client
+        """
+        super(ToggleRepoTestCase, self).setUp()
+        self.url = reverse(
+            'api:toggle-repo',
+            kwargs={'github_id': self.repo.github_id})
+        self.private_url = reverse(
+            'api:toggle-repo',
+            kwargs={'github_id': self.private_repo.github_id})
+        self.restricted_url = reverse(
+            'api:toggle-repo',
+            kwargs={'github_id': self.restricted_repo.github_id})
+
+        self.restricted_methods = [self.client.patch, self.client.put]
+
+    def test_activate(self):
+
+        self.repo.refresh_from_db()
+        self.assertTrue(self.repo.is_active)
+
+        # Deactivate
+        response = self.client.patch(
+            self.url, {'is_active': False}, format='json')
+        data = loads(response.content)
+        self.repo.refresh_from_db()
+        self.assertFalse(self.repo.is_active)
+
+        # Reactivate
+        response = self.client.patch(
+            self.url, {'is_active': True}, format='json')
+        data = loads(response.content)
+        self.repo.refresh_from_db()
+        self.assertTrue(self.repo.is_active)
+
+        # test with PUT
+        response = self.client.put(
+            self.url, {'is_active': False}, format='json')
+        data = loads(response.content)
+        self.repo.refresh_from_db()
+        self.assertFalse(self.repo.is_active)
+
+
+class IntegrationListTestCase(BaseAPITestCase):
+    """
+        Test listing and editing Integrations
+    """
+
+    def setUp(self):
+        """
+            Set the url and api client
+        """
+        super(IntegrationListTestCase, self).setUp()
+        self.url = reverse(
+            'api:integration-list',
+            kwargs={'repo': self.repo.id})
+
+    def test_list(self):
+
+        # integrations should be created as necessary
+        Integration.objects.all().delete()
+        self.assertEqual(Integration.objects.count(), 0)
+        response = self.client.get(self.url)
+        data = loads(response.content)
+        self.assertEqual(len(data), len(INTEGRATION_TYPES))
+        self.assertEqual(Integration.objects.count(), len(INTEGRATION_TYPES))
+
+
+class IntegrationDetailTestCase(BaseAPITestCase):
+    """
+        Test listing and editing Integrations
+    """
+
+    def setUp(self):
+        """
+            Set the url and api client
+        """
+        super(IntegrationDetailTestCase, self).setUp()
+        self.html = HTMLValidation.objects.create(repo=self.repo)
+        self.url = reverse(
+            'api:integration-detail',
+            kwargs={'repo': self.repo.id, 'pk': self.html.pk})
+        self.private_url = reverse(
+            'api:integration-detail',
+            kwargs={
+                'repo': self.private_repo.id,
+                'pk': self.private_html.pk
+            })
+        self.restricted_url = reverse(
+            'api:integration-detail',
+            kwargs={
+                'repo': self.restricted_repo.id,
+                'pk': self.restricted_html.pk
+            })
+
+        self.restricted_methods = [self.client.patch]
+
+    def test_detail(self):
+
+        response = self.client.get(self.url)
+        data = loads(response.content)
+        self.assertTrue('is_active' in data)
+        self.assertTrue('url_to_validate' in data)
+        self.assertTrue('deployment_delay' in data)
+
+    def test_not_found(self):
+
+        url = reverse(
+            'api:integration-detail',
+            kwargs={'repo': 12222, 'pk': 19999})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_update(self):
+
+        valid_url = 'http://www.google.com'
+        response = self.client.patch(
+            self.url,
+            {
+                'is_active': False,
+                'url_to_validate': valid_url,
+                'deployment_delay': None
+            },
+            format='json')
+        data = loads(response.content)
+        self.html.refresh_from_db()
+        self.assertEqual(self.html.url_to_validate, valid_url)
+        self.assertFalse(self.html.is_active)
+
+        # validation
+        response = self.client.patch(
+            self.url,
+            {
+                'is_active': True,
+                'url_to_validate': None,
+                'deployment_delay': None
+            },
+            format='json')
+        data = loads(response.content)
+        self.assertEqual(
+            data['url_to_validate'], ['This field is required when active.'])
+
+        self.html.refresh_from_db()
+        self.assertFalse(self.html.is_active)
+
+        # valid
+        response = self.client.patch(
+            self.url,
+            {
+                'is_active': True,
+                'url_to_validate': valid_url,
+                'deployment_delay': None
+            },
+            format='json')
+        self.html.refresh_from_db()
+        self.assertEqual(self.html.url_to_validate, valid_url)
+        self.assertTrue(self.html.is_active)

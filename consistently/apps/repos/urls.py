@@ -6,15 +6,15 @@ app_name = 'repos'
 
 urlpatterns = [
     path(
-        '',
-        views.HomeView.as_view(),
-        name='home'),
-    path(
-        'profile/<slug:github_prefix>/',
+        'profile/',
         views.ProfileView.as_view(),
         name='profile'),
     path(
-        '<slug:github_prefix>/',
+        '<slug:prefix>/',
         views.PrefixRepoListView.as_view(),
-        name='user-repo-list'),
+        name='prefix-repo-list'),
+    path(
+        '<slug:prefix>/<slug:name>/',
+        views.RepositoryDetailView.as_view(),
+        name='repo-detail')
 ]

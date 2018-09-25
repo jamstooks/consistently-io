@@ -7,22 +7,31 @@ class Repository(TimeStampedModel):
     """
     This represents a linked github repository.
 
-    Design question: is it worth using a property like `is_connected`
-    to retain details about a repository after it gets disconnected?
-    ... or should disconnection remove the repo altogether?
+    @todo - should we store the latest commit on this model for performance?
+    @todo - index on prefix/name
     """
     github_id = models.PositiveIntegerField(unique=True)
-    full_name = models.CharField(max_length=140, unique=True)
+    is_active = models.BooleanField(default=False)
     prefix = models.CharField(max_length=40)
     name = models.CharField(max_length=100)
+    activated_by = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        related_name='repos', blank=True, null=True)
+    latest_commit = models.ForeignKey(
+        'Commit', blank=True, null=True, on_delete=models.SET_NULL)
 
-    last_commit = models.DateTimeField(blank=True, null=True)
-    last_commit_name = models.CharField(max_length=40, blank=True, null=True)
+    @property
+    def full_name(self):
+        return "/%s/%s" % (self.prefix, self.name)
 
-    # The name and username are stored for quick lookup
-    # but changing a name or switching users shouldn't break the system
-    # could listen to hooks about repo owner changes
-    # @todo they should be updated frequently
-    # on commits? nightly? on user `refresh` actions? tbd...
-    added_by = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='repos')
+    def __str__(self):
+        return self.full_name
+
+
+class Commit(models.Model):
+    repo = models.ForeignKey(Repository, on_delete=models.CASCADE)
+    sha = models.CharField(max_length=40)
+    date = models.DateTimeField()
+
+    def __str__(self):
+        return self.sha[:6]

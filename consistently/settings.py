@@ -11,12 +11,13 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import json
 import consistently as project_module
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_DIR = os.path.join(BASE_DIR, 'consistently')
-VUE_DIR = os.path.join(PROJECT_DIR, 'vue')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -39,14 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # 'django_extensions',
     'rest_framework',
     'social_django',
-    
+
     'consistently',
     'consistently.apps.api',
     'consistently.apps.repos',
+    'consistently.apps.integrations',
 ]
 
 MIDDLEWARE = [
@@ -72,7 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                
+
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
             ],
@@ -131,11 +133,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    os.path.join(VUE_DIR, 'dist', 'static'),
-    os.path.join(PROJECT_DIR, 'static'),
-)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# ==============================================================================
+# social-auth config
+# ==============================================================================
+
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.github.GithubOAuth2',
@@ -145,10 +148,40 @@ AUTHENTICATION_BACKENDS = (
 SOCIAL_AUTH_GITHUB_KEY = os.environ.get('GITHUB_KEY', None)
 SOCIAL_AUTH_GITHUB_SECRET = os.environ.get('GITHUB_SECRET', None)
 SOCIAL_AUTH_GITHUB_SCOPE = ['read:org', ]
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/g/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = reverse_lazy('repos:profile')
 
 # github will need to be updated for dev environment
 # https://github.com/settings/applications/677341
 
 # When using postgres
-SOCIAL_AUTH_POSTGRES_JSONFIELD = os.environ.get('SOCIAL_AUTH_POSTGRES_JSONFIELD', False)
+SOCIAL_AUTH_POSTGRES_JSONFIELD = os.environ.get(
+    'SOCIAL_AUTH_POSTGRES_JSONFIELD', False)
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication'
+    ]
+}
+
+# ==============================================================================
+# Local dev with React
+# ==============================================================================
+
+if DEBUG:
+    MIDDLEWARE.append('consistently.dev_middleware.dev_cors_middleware')
+
+REACT_BASE_DIR = os.path.join(BASE_DIR, 'consistently-io-react')
+REACT_BUILD_DIR = os.path.join(REACT_BASE_DIR, 'build')
+
+STATICFILES_DIRS = [
+    os.path.join(REACT_BUILD_DIR, 'static'),
+    os.path.join(PROJECT_DIR, 'static')
+]
+
+# Pull the js and css filenames from the current build
+path = os.path.join(REACT_BUILD_DIR, "asset-manifest.json")
+with open(path) as f:
+    data = json.load(f)
+
+REACT_CSS_PATH = data['main.css'].replace('static/', '')
+REACT_JS_PATH = data['main.js'].replace('static/', '')

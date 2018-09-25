@@ -1,55 +1,58 @@
 {% extends "repos/base.html" %}
 
-{% block extra_css %}{% endblock %}
+{% load static %}
 
 {% block content %}
+  <h1>Your Profile</h1>
   
-  <h1>Profile: {{ prefix }}</h1>
+  <div class="center-column">
+    <div class="status-box">
+      <div class="status-box-repo">
+        jamstooks/my-app
+      </div>
+      <div class="status-box-toggle">
+        <img src="{% static 'img/toggle_off.svg' %}" alt="OFF"/>
+      </div>
+    </div>
+    
+    <div class="status-box">
+      <div class="status-box-repo">
+        jamstooks/my-verylong-app-name
+      </div>
+      <div class="status-box-toggle loading">
+        <i class="fas fa-spinner fa-spin"></i>
+      </div>
+    </div>
+    
+    <div class="status-box">
       
-  <div class="row">
-    <div class="col-lg-10 offset-lg-1 col-md">
+      <div class="status-box-repo">
+        <a href="#">
+          jamstooks/django-celery-downloader
+        </a>
+      </div>
       
-      {% if repo_list %}
-
-        {% for repo in repo_list %}
-        
-          <div class="repo-box row">
-            <div class="col-sm-9">
-              <span class="repo-box-name">
-                {{ repo.name }}
-                <!--<span class="octicon octicon-mark-github"></span>-->
-              </span>
-            {% if repo.is_connected %}
-              <span class="repo-box-settings octicon octicon-gear float-right"></span>
-            {% endif %}
-            </div>
-            <div class="
-              col-sm-3
-              repo-box-status
-              {% if repo.is_connected %}
-              repo-box-status-connected
-              {% else %}
-              repo-box-status-unconnected
-              {% endif %}">
-              <i
-                class="fa
-                {% if repo.is_connected %}
-                fa-toggle-on
-                {% else %}
-                fa-toggle-off
-                {% endif %}"></i>
-            </div>
-          </div>
-          
-        {% endfor %}
-        
-      {% else %}
+      <div class="status-box-settings">
+        <a href="#">
+          <span class="octicon octicon-gear"></span>
+        </a>
+      </div>
       
-        <p>No Connected Repositories</p>
-        
-      {% endif %}
+      <div class="status-box-toggle active">
+        <img src="{% static 'img/toggle_on.svg' %}" alt="ON"/>
+      </div>
     </div>
   </div>
+  
+  <div id="app"></div>
 {% endblock %}
 
-{% block extra_js %}{% endblock %}
+{% block js %}
+  {{ block.super }}
+  <script src="{% static main_js %}"></script>
+{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static main_css %}">
+{% endblock %}

@@ -1,0 +1,28 @@
+body {
+  background-color: white;
+  font-family: 'Fjalla One', sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+.center {
+    text-align: center;
+}
+
+.octicon {
+    margin-right: .5em;
+    font-size: inherit;
+}
+
+.content {
+    padding: 0 1em;
+}
+
+h1 {
+    font-weight: normal;
+}
+
+.center-column {
+    width: 600px;
+    margin: auto;
+}

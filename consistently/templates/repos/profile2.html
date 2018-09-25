@@ -1,0 +1,66 @@
+{% extends "repos/base.html" %}
+
+{% block extra_css %}{% endblock %}
+
+{% block content %}
+  
+  <h1>Profile: {{ prefix }}</h1>
+      
+  <div class="row">
+    <div class="col-lg-8 offset-lg-2 col-md">
+      
+      {% if repo_list %}
+
+        {% for repo in repo_list %}
+        
+          <div class="repo-box row">
+            <div class="col-sm-9">
+              <span class="repo-box-name">
+                {{ repo.name }}
+                <!--<span class="octicon octicon-mark-github"></span>-->
+              </span>
+              <a href="{{ repo.settings_url }}">
+                <span
+                  id="settings-{{ repo.github_id }}"
+                  class="
+                    repo-box-settings
+                    octicon octicon-gear
+                    float-right
+                    {% if not repo.is_connected %}hidden{% endif %}">
+                </span>
+              </a>
+            </div>
+            <div
+              class="
+                col-sm-3
+                repo-box-status
+                {% if repo.is_connected %}connected{% endif %}"
+              >
+              <!-- @todo: add listener to this icon instead? -->
+              <i
+                class="toggle-repo fa fa-toggle-{% if repo.is_connected %}on{% else %}off{% endif %}"
+                data-githubid="{{ repo.github_id }}"
+                data-apiaddurl="{% url 'api:repository-list' %}"
+                data-apidelurl="{% url 'api:repository-detail' repo.github_id %}">
+              </i>
+            </div>
+          </div>
+          
+        {% endfor %}
+        
+      {% else %}
+      
+        <p>No Connected Repositories</p>
+        
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  {{ block.super }}
+  <script>
+    //$('.repo-box-status').on('click', '*', handleToggleRepoConnect);
+    $(".toggle-repo").click(handleToggleRepoConnect);
+  </script>
+{% endblock %}

@@ -1,0 +1,23 @@
+{
+  "name": "consistently-io",
+  "version": "0.1.0",
+  "description": "Deployment Goals at consistently.io",
+  "homepage": "http://consistently.io/",
+  "author": {
+    "name": "Benjamin W Stookey",
+    "url": "https://github.com/jamstooks/"
+  },
+  "engines": {
+    "node": "10.11.0",
+    "npm": "6.4.1"
+  },
+  "license": "MIT",
+  "keywords": [
+    "deployment", "continuous integration"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "postinstall": "npm install --only=dev --prefix consistently-io-react && npm install --prefix consistently-io-react && npm run build --prefix consistently-io-react"
+  }
+}

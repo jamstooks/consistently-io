@@ -1,58 +1,76 @@
 from rest_framework import serializers
 from github import Github
 from consistently.apps.repos.models import Repository
+from consistently.apps.integrations.models import (
+    Integration, INTEGRATION_TYPES)
+from consistently.apps.integrations.types.html.models import HTMLValidation
 
 
-class RepositorySerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(
-        view_name="api:repository-detail")
+class IntegrationListSerializer(serializers.ModelSerializer):
+
+    # logo_url = serializers.SerializerMethodField('get_logo_url')
 
     class Meta:
-        model = Repository
+        model = Integration
         fields = (
-            'url', 'id', 'github_id', 'full_name', 'last_commit',
-            'last_commit_name', 'prefix', 'name', 'added_by')
+            'repo', 'integration_type', 'is_active')  # , 'logo_url')
+
+    # @todo - get logo
+    # def get_logo_url(self, obj):
+        # return obj.get...()
 
 
-class RepoCreateSerializer(serializers.ModelSerializer):
+class IntegrationDetailSerializer(serializers.ModelSerializer):
     """
-    Creates a local repository from a gihub repo given an ID
+        Individual integration serializer that users the serializer
+        type to 
+    """
 
-    @todo - permissions
+    # logo_url = serializers.SerializerMethodField('get_logo_url')
+
+    class Meta:
+        model = Integration
+        fields = (
+            'repo', 'integration_type', 'is_active')  # , 'logo_url')
+
+
+class HTMLValidationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = HTMLValidation
+        fields = (
+            'repo', 'integration_type',
+            'status_passed',
+            'last_check', 'is_active', 'deployment_delay',
+            'url_to_validate', 'error_count', 'warning_count')
+
+
+class IntegrationDetailSerializer(IntegrationListSerializer):
+
+    def __init__(self, *args, **kwargs):
+
+        import pdb
+        pdb.set_trace()
+
+        super(IntegrationDetailSerializer, self).__init__(*args, **kwargs)
+
+        klass = INTEGRATION_TYPES[self.instance.integration_type]
+
+        fields = [k.name for k in klass._meta.fields]
+
+        for f in fields:
+            print(f)
+            if f not in self.fields:
+                self.fields.append(f)
+
+
+class RepositoryUpdateSerializer(serializers.ModelSerializer):
+    """
+        Serializer for the `is_active` field on a repository
+
+        @todo - validation here or on the view?
     """
 
     class Meta:
         model = Repository
-        fields = ('github_id',)
-
-    def save(self):
-
-        github_repo = self.get_github_repo(self.validated_data)
-
-        repo = Repository(
-            full_name=github_repo.full_name,
-            github_id=github_repo.id,
-            added_by=self.context['request'].user,
-        )
-        repo.prefix, repo.name = github_repo.full_name.split('/')
-        repo.save()
-
-    def validate(self, data):
-        """
-        Check that the github repo exists
-        """
-        github_repo = self.get_github_repo(data)
-        try:
-            id = github_repo.id
-        except:
-            raise serializers.ValidationError("No matching repo on Github")
-        return data
-
-    def get_github_repo(self, data):
-
-        if not hasattr(self, 'github_repo'):
-            id = data['github_id']
-            g = Github()
-            self.github_repo = g.get_repo(id)
-
-        return self.github_repo
+        fields = ("is_active", )

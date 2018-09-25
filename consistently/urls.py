@@ -15,7 +15,7 @@ from django.urls import include, path
 def logout(request):
     """Logs out user"""
     auth_logout(request)
-    return redirect('/g/')
+    return redirect('/')
 
 
 urlpatterns = [
@@ -26,10 +26,12 @@ urlpatterns = [
     path(
         'g/',
         include('consistently.apps.repos.urls')),
+
+
     path('logout/', logout, name='logout'),
     url(
         r'^api-auth/',
         include('rest_framework.urls', namespace='rest_framework')),
-    url('', include('social_django.urls')), # why can't this have a prefix??
-    
+    url('', include('social_django.urls')),  # why can't this have a prefix??
+
 ]
