@@ -6,45 +6,35 @@
   <h1>Your Profile</h1>
   
   <div class="center-column">
-    <div class="status-box">
-      <div class="status-box-repo">
-        jamstooks/my-app
-      </div>
-      <div class="status-box-toggle">
-        <img src="{% static 'img/toggle_off.svg' %}" alt="OFF"/>
-      </div>
-    </div>
+  <!--  <div class="status-box">-->
+  <!--    <div class="status-box-repo">-->
+  <!--      jamstooks/my-app-->
+  <!--    </div>-->
+  <!--    <div class="status-box-toggle inactive">off</div>-->
+  <!--  </div>-->
     
-    <div class="status-box">
-      <div class="status-box-repo">
-        jamstooks/my-verylong-app-name
-      </div>
-      <div class="status-box-toggle loading">
-        <i class="fas fa-spinner fa-spin"></i>
-      </div>
-    </div>
+  <!--  <div class="status-box">-->
+  <!--    <div class="status-box-repo">-->
+  <!--      jamstooks/my-verylong-app-name-->
+  <!--    </div>-->
+  <!--    <div class="status-box-toggle loading"></div>-->
+  <!--  </div>-->
     
-    <div class="status-box">
+  <!--  <div class="status-box">-->
       
-      <div class="status-box-repo">
-        <a href="#">
-          jamstooks/django-celery-downloader
-        </a>
-      </div>
+  <!--    <div class="status-box-repo">-->
+  <!--      <a href="#">-->
+  <!--        jamstooks/django-celery-downloader-->
+  <!--      </a>-->
+  <!--    </div>-->
       
-      <div class="status-box-settings">
-        <a href="#">
-          <span class="octicon octicon-gear"></span>
-        </a>
-      </div>
+  <!--    <div class="status-box-settings"></div>-->
       
-      <div class="status-box-toggle active">
-        <img src="{% static 'img/toggle_on.svg' %}" alt="ON"/>
-      </div>
-    </div>
+  <!--    <div class="status-box-toggle active"></div>-->
+  <!--  </div>-->
+    <div id="app"></div>
   </div>
   
-  <div id="app"></div>
 {% endblock %}
 
 {% block js %}
@@ -54,5 +44,5 @@
 
 {% block css %}
   {{ block.super }}
-  <link rel="stylesheet" href="{% static main_css %}">
+  <!--<link rel="stylesheet" href="{% static main_css %}">-->
 {% endblock %}

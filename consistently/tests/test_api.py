@@ -69,6 +69,7 @@ class GithubReposTestCase(BaseAPITestCase):
         # this assumes that two of the three test repos belong to the
         # authenticated user, but one is private
         self.assertEqual(len(data) + 2, Repository.objects.count())
+        print(data)
 
         # make sure the private repo wasn't returned
         for r in data:

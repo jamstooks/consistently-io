@@ -77,7 +77,5 @@ class ProfileTestCase(BaseTestCase):
         self.assertIn(login_url, response.url)
 
         self.login_client()
-        import pdb
-        pdb.set_trace()
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)

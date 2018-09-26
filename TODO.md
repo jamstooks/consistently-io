@@ -1,5 +1,6 @@
 # Todo List
 
+- [ ] profile API endpoint should return repo-url and django id
 
 ## Down the road...
 

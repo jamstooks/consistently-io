@@ -183,5 +183,6 @@ path = os.path.join(REACT_BUILD_DIR, "asset-manifest.json")
 with open(path) as f:
     data = json.load(f)
 
-REACT_CSS_PATH = data['main.css'].replace('static/', '')
+# REACT_CSS_PATH = data['main.css'].replace('static/', '')
+REACT_CSS_PATH = None
 REACT_JS_PATH = data['main.js'].replace('static/', '')

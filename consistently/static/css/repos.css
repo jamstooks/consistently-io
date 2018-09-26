@@ -12,44 +12,61 @@
 }
 
 .status-box a, .status-box a:visited {
-    color: #222;
-    text-decoration: none;
+    color: #555;
+    text-decoration: underline;
 }
 
 .status-box a:hover {
-    color: #666;
+    color: #333;
+    /*text-decoration: none;*/
 }
 
-.status-box .repo-name {
-    flex-grow: 10;
+.status-box-repo {
+    flex-grow: 20;
     text-align: left;
 }
 
-.status-box-repo, .status-box-settings {
+.status-box-repo {
     padding: .2em .5em;
     font-size: 1.3em;
-    /*background-color: whitesmoke;*/
     color: grey;
+    line-height: 1;
 }
 
 .status-box-settings {
     flex-grow: 1;
-    text-align: right;
+    min-width: 3em;
+    max-width: 3em;
+    background-image: url('../img/settings.svg');
+    background-repeat: no-repeat;
+    background-size: 1.5em;
+    background-position: center center;
+    cursor: pointer;
+}
+
+.status-box-settings:hover {
+    background-color: lightgrey;
 }
 
 .status-box-toggle {
-    /*width: 1.2em;*/
+    flex-grow: 1;
+    text-align: center;
+    width: 3em;
+    height: 1.8em;
+    max-width: 3em;
+    min-width: 3em;
     font-size: 2em;
-    /*padding: .1rem 1.5rem;*/
     margin: 0;
-    line-height: 1.2;
+    padding: 0;
+    /*overflow: hidden;*/
     cursor: pointer;
     background-color: darkgrey;
     color: grey;
-    flex-grow: 1;
-    max-width: 3em;
     text-align: center;
-    padding: .2em .5em;
+    background-repeat: no-repeat;
+    background-size: 80%;
+    background-position: center;
+    color: transparent;
 }
 
 .status-box-toggle img {
@@ -57,9 +74,37 @@
     margin: 0 .5em;
 }
 
+.status-box-toggle.inactive {
+    background-image: url('../img/toggle_off.svg');
+}
+
+.status-box-toggle.inactive:hover {
+    background-color: #999999;
+}
+
 .status-box-toggle.active {
     background-color: #b6d7a8;
-    color: #6aa84f;
+    background-image: url('../img/toggle_on.svg');
+}
+
+.status-box-toggle.active:hover {
+    background-color: #93c47d;
+}
+
+@keyframes animatedBackground {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(359deg); }
+}
+
+.status-box-toggle.loading::after {
+    content: url('../img/loading_icon.svg');
+    width: 1.1em;
+    height: 1.1em;
+    margin: 0 auto;
+    padding: 0;
+    line-height: 1;
+    animation: animatedBackground 2s linear infinite;
+    transform-origin: center center;
 }
 
 .status-box-toggle.active > .fas {
