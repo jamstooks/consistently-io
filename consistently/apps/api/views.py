@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 
 from rest_framework import generics
 from rest_framework import mixins
@@ -14,9 +15,7 @@ from consistently.apps.repos.models import Repository
 from consistently.apps.integrations.models import Integration, INTEGRATION_TYPES
 from consistently.apps.integrations.types.html.models import HTMLValidation
 from .serializers import (
-    RepositoryUpdateSerializer,
-    IntegrationListSerializer, IntegrationDetailSerializer,
-    HTMLValidationSerializer)
+    RepositoryUpdateSerializer, IntegrationListSerializer)
 from .permissions import HasRepoAccess
 
 # @todo - throttling
@@ -36,29 +35,35 @@ class GithubReposView(APIView):
         user = g.get_user()
 
         repo_list = []
+        # for every github repo
         for gr in user.get_repos():
-            try:
-                repo = Repository.objects.get(github_id=gr.id)
-            except Repository.DoesNotExist:
-                # @todo - review performance here,
-                # should these be created here or on activation?
-                # Rationale: to get around having to create an
-                # update_or_create endpoint
-                # @todo - build a cleanup script
+            if gr.permissions.admin:
+                try:
+                    repo = Repository.objects.get(github_id=gr.id)
+                except Repository.DoesNotExist:
+                    # @todo - review performance here,
+                    # should these be created here or on activation?
+                    # Rationale: to get around having to create an
+                    # update_or_create endpoint
+                    # @todo - build a cleanup script
+                    if not gr.private:
+                        repo = Repository.objects.create(
+                            github_id=gr.id,
+                            prefix=gr.owner.login,
+                            name=gr.name
+                        )
                 if not gr.private:
-                    repo = Repository.objects.create(
-                        github_id=gr.id,
-                        prefix=gr.owner.login,
-                        name=gr.name
-                    )
-            if not gr.private:
-                repo_list.append({
-                    'prefix': repo.prefix,
-                    'name': repo.name,
-                    'github_id': gr.id,
-                    'is_active': repo.is_active,
-                    'settings_url': "#"  # @todo
-                })
+                    repo_list.append({
+                        'id': repo.id,
+                        'url': reverse(
+                            'repos:repo-detail',
+                            kwargs={'prefix': repo.prefix, 'name': repo.name}),
+                        'prefix': repo.prefix,
+                        'name': repo.name,
+                        'github_id': gr.id,
+                        'is_active': repo.is_active,
+                        'settings_url': "#"  # @todo
+                    })
 
         return Response(repo_list)
 
@@ -104,7 +109,7 @@ class IntegrationDetailView(
         mixins.UpdateModelMixin,
         viewsets.GenericViewSet):
     """
-    Retrive/Update endpoint for a specific mixin
+    Retrive/Update endpoint for a specific integration
     """
     queryset = Integration.objects.all()
     serializer_class = IntegrationListSerializer

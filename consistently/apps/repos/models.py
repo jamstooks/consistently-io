@@ -22,7 +22,7 @@ class Repository(TimeStampedModel):
 
     @property
     def full_name(self):
-        return "/%s/%s" % (self.prefix, self.name)
+        return "%s/%s" % (self.prefix, self.name)
 
     def __str__(self):
         return self.full_name

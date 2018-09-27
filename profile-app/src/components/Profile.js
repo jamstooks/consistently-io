@@ -10,14 +10,18 @@ class Profile extends React.Component {
     this.props.getProfile();
   }
 
-  toggleRepo = (repoId) => () => {
-    console.log("toggling repo! " + repoId);
+  toggleRepo = (repo) => () => {
+    this.props.toggleRepo(repo.github_id, !repo.is_active);
   }
 
   render() {
 
+    if (this.props.isFetching) {
+      return (<p className="loading-block">Loading...</p>);
+    }
+
     if (this.props.error !== null && this.props.error !== undefined) {
-      return (<p>Error! [{this.props.error}]</p>)
+      return (<p>Error! [{this.props.error}]</p>);
     }
 
     let rows = [];
@@ -28,7 +32,7 @@ class Profile extends React.Component {
           <StatusBox
             repo={r}
             isFetching={false}
-            toggle={this.toggleRepo(r.id)}>
+            toggle={this.toggleRepo(r)}>
           </StatusBox>
         );
       });
@@ -47,6 +51,10 @@ Profile.propTypes = {
    * Get the profile for the authenticated user
    */
   getProfile: PropTypes.func.isRequired,
+  /**
+   * Toggles the active status on a repo
+   */
+  toggleRepo: PropTypes.func.isRequired,
   /**
    * The repository to show
    */

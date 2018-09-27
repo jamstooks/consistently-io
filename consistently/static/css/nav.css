@@ -6,7 +6,7 @@
     font-size: 1.5em;
 }
 
-.nav > div {
+.nav>div {
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -45,14 +45,15 @@
     top: 5.6em;
     padding: 0;
     margin: 0;
-    background-color: #ddd;
+    background-color: #eee;
     display: flex;
     justify-content: center;
     flex-direction: column;
     text-align: center;
 }
 
-.menu a, .menu a:visited {
+.menu a,
+.menu a:visited {
     color: dimgrey;
     text-decoration: none;
     display: block;

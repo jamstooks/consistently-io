@@ -1,29 +1,28 @@
-{% extends "repos/base.html" %}
+{% extends "repos/base.html" %} {% block content %}
 
-{% block content %}
-  
-  
-  <h1>{{ github_prefix }}</h1>
-      
-  <div class="row">
-    <div class="col-lg-8 offset-lg-2 col-sm">
-      
-      {% if connected_repos %}
 
-        {% for repo in connected_repos %}
-        
-          <div class="repo-box">
-            {{ repo.full_name }}
-          </div>
-          
-        {% endfor %}
-        
-      {% else %}
-      
-        <p>No Connected Repositories</p>
-        
-      {% endif %}
+<h1>{{ prefix }}</h1>
+
+<div class="center-column">
+
+  {% if repo_list %} {% for repo in repo_list %}
+
+  <div class="repo-box">
+    <div class="repo-box-repo">
+      <a href="{% url 'repos:repo-detail' repo.prefix repo.name %}">
+          {{repo.full_name}}
+        </a>
     </div>
+    <div class="repo-box-settings">
+      <a href="#"></a>
+    </div>
+    <!--<div class="repo-box-toggle inactive">off</div>-->
   </div>
-{% endblock %}
 
+  {% endfor %} {% else %}
+
+  <p>No Connected Repositories</p>
+
+  {% endif %}
+</div>
+{% endblock %}

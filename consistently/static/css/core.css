@@ -6,23 +6,56 @@ body {
 }
 
 .center {
-    text-align: center;
+  text-align: center;
 }
 
 .octicon {
-    margin-right: .5em;
-    font-size: inherit;
+  margin-right: .5em;
+  font-size: inherit;
 }
 
 .content {
-    padding: 0 1em;
+  padding: 0 1em;
 }
 
 h1 {
-    font-weight: normal;
+  font-weight: normal;
+  color: #444;
 }
 
 .center-column {
-    width: 600px;
-    margin: auto;
+  width: 600px;
+  margin: auto;
+}
+
+a,
+a:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #e69138;
+  /*text-decoration: none;*/
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.loading-block {
+  display: block;
+  content: url('../img/menu_icon.svg');
+  animation: animatedBackground 2s linear infinite;
+  transform-origin: center center;
+
+  width: 10em;
+  height: 10em;
+  padding: 1em;
+  margin: auto;
 }

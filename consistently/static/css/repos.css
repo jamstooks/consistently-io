@@ -1,39 +1,41 @@
-.status-box {
+.repo-box {
     display: flex;
     justify-content: space-between;
     margin-bottom: 1em;
     background-color: whitesmoke;
+    height: 3.6em;
 }
 
-.status-box > div {
+.repo-box>div {
     display: flex;
     justify-content: center;
     flex-direction: column;
 }
 
-.status-box a, .status-box a:visited {
-    color: #555;
+.repo-box a,
+.repo-box a:visited {
+    color: #666;
     text-decoration: underline;
 }
 
-.status-box a:hover {
-    color: #333;
+.repo-box a:hover {
+    color: #e69138;
     /*text-decoration: none;*/
 }
 
-.status-box-repo {
+.repo-box-repo {
     flex-grow: 20;
     text-align: left;
 }
 
-.status-box-repo {
+.repo-box-repo {
     padding: .2em .5em;
     font-size: 1.3em;
     color: grey;
     line-height: 1;
 }
 
-.status-box-settings {
+.repo-box-settings {
     flex-grow: 1;
     min-width: 3em;
     max-width: 3em;
@@ -44,11 +46,11 @@
     cursor: pointer;
 }
 
-.status-box-settings:hover {
+.repo-box-settings:hover {
     background-color: lightgrey;
 }
 
-.status-box-toggle {
+.repo-box-toggle {
     flex-grow: 1;
     text-align: center;
     width: 3em;
@@ -69,44 +71,59 @@
     color: transparent;
 }
 
-.status-box-toggle img {
+.repo-box-toggle img {
     width: 2.2em;
     margin: 0 .5em;
 }
 
-.status-box-toggle.inactive {
+.repo-box-toggle.inactive {
     background-image: url('../img/toggle_off.svg');
 }
 
-.status-box-toggle.inactive:hover {
+.repo-box-toggle.inactive:hover {
     background-color: #999999;
 }
 
-.status-box-toggle.active {
+.repo-box-toggle.active {
     background-color: #b6d7a8;
     background-image: url('../img/toggle_on.svg');
 }
 
-.status-box-toggle.active:hover {
+.repo-box-toggle.fetching {
+    background-image: url('../img/toggle_empty.svg');
+}
+
+.repo-box-toggle.active:hover {
     background-color: #93c47d;
 }
 
 @keyframes animatedBackground {
-	from { transform: rotate(0deg); }
-	to { transform: rotate(359deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
 }
 
-.status-box-toggle.loading::after {
+.repo-box-toggle.fetching::after {
     content: url('../img/loading_icon.svg');
-    width: 1.1em;
-    height: 1.1em;
+    /*background-color: red;*/
+    width: .7em;
+    height: .7em;
     margin: 0 auto;
-    padding: 0;
-    line-height: 1;
+    padding: .3em 0 .8em;
+    /*line-height: 1;*/
     animation: animatedBackground 2s linear infinite;
     transform-origin: center center;
 }
 
-.status-box-toggle.active > .fas {
+.repo-box-toggle.active>.fas {
     transform: rotate(180deg);
+}
+
+.repo-box-settings a {
+    display: block;
+    width: 100%;
+    height: 100%;
 }

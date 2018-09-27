@@ -170,7 +170,7 @@ REST_FRAMEWORK = {
 if DEBUG:
     MIDDLEWARE.append('consistently.dev_middleware.dev_cors_middleware')
 
-REACT_BASE_DIR = os.path.join(BASE_DIR, 'consistently-io-react')
+REACT_BASE_DIR = os.path.join(BASE_DIR, 'profile-app')
 REACT_BUILD_DIR = os.path.join(REACT_BASE_DIR, 'build')
 
 STATICFILES_DIRS = [

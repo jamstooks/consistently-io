@@ -10,25 +10,31 @@ class StatusBox extends React.Component {
 
     // Toggle Class
     let className = is_active ? "active" : "inactive";
-    if(this.props.isFetching) {
+    if (this.props.repo.isFetching) {
       className = "fetching";
     }
-    
+
     // Repo name and link
     let fullName = this.props.repo.prefix + "/" + this.props.repo.name;
     let repoName = !is_active ?
       fullName :
-      (<a href="#test">{fullName}</a>);
-    
+      (<a href={this.props.repo.url}>{fullName}</a>);
+
+    let settings = !is_active ?
+      null :
+      (<div
+          className={'repo-box-settings ' + className}>
+          <a
+            href={this.props.repo.settings_url}
+            className="settings-link"></a>
+        </div>);
+
     return (
-      <div class="status-box">
-        <div className="status-box-repo">{repoName}</div>
+      <div class="repo-box">
+        <div className="repo-box-repo">{repoName}</div>
+        { settings }
         <div
-          className={'status-box-settings ' + className}
-          onClick={this.goToSettings}>
-        </div>
-        <div
-          className={'status-box-toggle ' + className}
+          className={'repo-box-toggle ' + className}
           onClick={this.props.toggle}
           ></div>
       </div>
@@ -41,10 +47,6 @@ StatusBox.propTypes = {
    * The repository to show
    */
   repo: PropTypes.object.isRequired,
-  /**
-   * Loading indicator
-   */
-  isFetching: PropTypes.bool,
   /**
    * The method to toggle the `is_active` property
    */

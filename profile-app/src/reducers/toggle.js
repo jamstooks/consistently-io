@@ -1,6 +1,6 @@
-const profile = (
+const toggle = (
     state = {
-        isFetching: false,
+        fetchList: false,
         repoList: null,
         error: null
     },

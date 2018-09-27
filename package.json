@@ -1,5 +1,5 @@
 {
-  "name": "consistently-io",
+  "name": "profile-app",
   "version": "0.1.0",
   "description": "Deployment Goals at consistently.io",
   "homepage": "http://consistently.io/",
@@ -18,6 +18,6 @@
   "dependencies": {},
   "devDependencies": {},
   "scripts": {
-    "postinstall": "npm install --only=dev --prefix consistently-io-react && npm install --prefix consistently-io-react && npm run build --prefix consistently-io-react"
+    "postinstall": "npm install --only=dev --prefix profile-app && npm install --prefix profile-app && npm run build --prefix profile-app"
   }
 }

@@ -2,7 +2,7 @@ import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import fetchMock from "fetch-mock";
 
-import * as actions from "./";
+import * as actions from "./profile";
 import { mockProfileRepos } from "../mockData"
 
 

@@ -1,6 +1,8 @@
 # Todo List
 
-- [ ] profile API endpoint should return repo-url and django id
+- [x] profile API endpoint should return repo-url and django id
+- [ ] get the toggle working!
+- [x] profile loading indicator
 
 ## Down the road...
 

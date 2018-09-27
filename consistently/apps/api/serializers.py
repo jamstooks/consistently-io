@@ -6,6 +6,18 @@ from consistently.apps.integrations.models import (
 from consistently.apps.integrations.types.html.models import HTMLValidation
 
 
+class RepositoryUpdateSerializer(serializers.ModelSerializer):
+    """
+        Serializer for the `is_active` field on a repository
+
+        @todo - validation here or on the view?
+    """
+
+    class Meta:
+        model = Repository
+        fields = ("is_active", )
+
+
 class IntegrationListSerializer(serializers.ModelSerializer):
 
     # logo_url = serializers.SerializerMethodField('get_logo_url')
@@ -20,57 +32,45 @@ class IntegrationListSerializer(serializers.ModelSerializer):
         # return obj.get...()
 
 
-class IntegrationDetailSerializer(serializers.ModelSerializer):
-    """
-        Individual integration serializer that users the serializer
-        type to 
-    """
+# class IntegrationDetailSerializer(serializers.ModelSerializer):
+#     """
+#         Individual integration serializer that users the serializer
+#         type to
+#     """
 
-    # logo_url = serializers.SerializerMethodField('get_logo_url')
+#     # logo_url = serializers.SerializerMethodField('get_logo_url')
 
-    class Meta:
-        model = Integration
-        fields = (
-            'repo', 'integration_type', 'is_active')  # , 'logo_url')
-
-
-class HTMLValidationSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = HTMLValidation
-        fields = (
-            'repo', 'integration_type',
-            'status_passed',
-            'last_check', 'is_active', 'deployment_delay',
-            'url_to_validate', 'error_count', 'warning_count')
+#     class Meta:
+#         model = Integration
+#         fields = (
+#             'repo', 'integration_type', 'is_active')  # , 'logo_url')
 
 
-class IntegrationDetailSerializer(IntegrationListSerializer):
+# class HTMLValidationSerializer(serializers.ModelSerializer):
 
-    def __init__(self, *args, **kwargs):
-
-        import pdb
-        pdb.set_trace()
-
-        super(IntegrationDetailSerializer, self).__init__(*args, **kwargs)
-
-        klass = INTEGRATION_TYPES[self.instance.integration_type]
-
-        fields = [k.name for k in klass._meta.fields]
-
-        for f in fields:
-            print(f)
-            if f not in self.fields:
-                self.fields.append(f)
+#     class Meta:
+#         model = HTMLValidation
+#         fields = (
+#             'repo', 'integration_type',
+#             'status_passed',
+#             'last_check', 'is_active', 'deployment_delay',
+#             'url_to_validate', 'error_count', 'warning_count')
 
 
-class RepositoryUpdateSerializer(serializers.ModelSerializer):
-    """
-        Serializer for the `is_active` field on a repository
+# class IntegrationDetailSerializer(IntegrationListSerializer):
 
-        @todo - validation here or on the view?
-    """
+#     def __init__(self, *args, **kwargs):
 
-    class Meta:
-        model = Repository
-        fields = ("is_active", )
+#         import pdb
+#         pdb.set_trace()
+
+#         super(IntegrationDetailSerializer, self).__init__(*args, **kwargs)
+
+#         klass = INTEGRATION_TYPES[self.instance.integration_type]
+
+#         fields = [k.name for k in klass._meta.fields]
+
+#         for f in fields:
+#             print(f)
+#             if f not in self.fields:
+#                 self.fields.append(f)

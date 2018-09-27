@@ -1,0 +1,9 @@
+{% extends "repos/base.html" %} {% block content %}
+<h1>
+    <a href="{% url 'repos:prefix-repo-list' repo.prefix%}">
+        {{ repo.prefix }}</a>/{{ repo.name }}</h1>
+
+<div class="center-column">
+
+</div>
+{% endblock %}

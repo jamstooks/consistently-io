@@ -1,5 +1,6 @@
 import profile from "./";
-import mockProfileRepos from "../mockData"
+import { mockProfileRepos } from "../mockData"
+
 
 describe("profile reducer", () => {
   it("should handle initial state", () => {
@@ -59,4 +60,48 @@ describe("profile reducer", () => {
       error: "ERROR!"
     });
   });
+
+  it("should handle TOGGLE_REQUEST", () => {
+
+    let newMock = mockProfileRepos.slice();
+    newMock[0].isFetching = true;
+
+    expect(
+      profile({
+        isFetching: false,
+        repoList: mockProfileRepos,
+        error: null
+      }, {
+        type: "TOGGLE_REQUEST",
+        github_id: mockProfileRepos[0].github_id
+      })
+    ).toEqual({
+      isFetching: false,
+      repoList: newMock,
+      error: null
+    });
+  });
+
+  it("should handle TOGGLE_SUCCESS", () => {
+
+    let newMock = mockProfileRepos.slice();
+    newMock[0].is_active = !newMock[0].is_active;
+
+    expect(
+      profile({
+        isFetching: false,
+        repoList: mockProfileRepos,
+        error: null
+      }, {
+        type: "TOGGLE_SUCCESS",
+        github_id: newMock[0].github_id,
+        json: { is_active: newMock[0].is_active }
+      })
+    ).toEqual({
+      isFetching: false,
+      repoList: newMock,
+      error: null
+    });
+  });
+
 });

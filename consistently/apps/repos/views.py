@@ -38,7 +38,7 @@ class PrefixRepoListView(TemplateView):
 
 class RepositoryDetailView(DetailView):
 
-    template_name = "repos/repo_settings.html"
+    template_name = "repos/repo_detail.html"
     model = Repository
     context_object_name = "repo"
 

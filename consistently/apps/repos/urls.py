@@ -10,11 +10,11 @@ urlpatterns = [
         views.ProfileView.as_view(),
         name='profile'),
     path(
-        '<slug:prefix>/',
+        'g/<slug:prefix>/',
         views.PrefixRepoListView.as_view(),
         name='prefix-repo-list'),
     path(
-        '<slug:prefix>/<slug:name>/',
+        'g/<prefix>/<name>/',
         views.RepositoryDetailView.as_view(),
         name='repo-detail')
 ]

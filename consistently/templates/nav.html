@@ -11,30 +11,29 @@
   </div>
   <div onclick="toggleMenu('right-menu');" class="nav-right">
     <span>
-      <span class="octicon octicon-mark-github"></span>
-      {% if user.is_authenticated %}
-        {{ user.username }}
-      {% endif %}
+      <span class="octicon octicon-mark-github"></span> {% if user.is_authenticated %} {{ user.username }} {% endif %}
     </span>
   </div>
 </div>
 
 <div id="right-menu" class="menu hidden">
   {% if user.is_authenticated %}
-    <a href="{% url 'repos:profile' %}">
-      <span class="octicon octicon-person"></span>
-      Profile
+  <a href="{% url 'repos:prefix-repo-list' prefix=user.username %}">
+      <span class="octicon octicon-repo"></span>
+      Connected Repos
     </a>
-    <a href="{% url 'logout' %}">
+  <a href="{% url 'repos:profile' %}">
+      <span class="octicon octicon-gear"></span>
+      Manage
+    </a>
+  <a href="{% url 'logout' %}">
       <span class="octicon octicon-sign-out"></span>
       Sign out
-    </a>
-  {% else %}
-    <a href="{% url 'social:begin' 'github' %}">
+    </a> {% else %}
+  <a href="{% url 'social:begin' 'github' %}">
       <span class="octicon octicon-mark-github"></span>
       Log In
-    </a>
-  {% endif %}
+    </a> {% endif %}
 </div>
 
 <div id="left-menu" class="menu hidden">
