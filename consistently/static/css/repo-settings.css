@@ -1,0 +1,119 @@
+.repo-settings {
+    /*display: grid;*/
+    background-color: whitesmoke;
+    overflow: hidden;
+    padding: 0;
+    margin: 0 0 1em 0;
+    color: dimgrey;
+}
+
+.repo-settings .back-button {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.repo-settings .toggle-switch {
+    font-size: 1rem;
+    height: 2.5em;
+    float: right;
+    max-width: none;
+    min-width: 6em;
+}
+
+.config, .grid-container {
+    transition: all .5s linear;
+}
+
+.config {
+    margin: 0;
+    margin-left: 100%;
+    overflow: hidden;
+    z-index: 11;
+    width: 100%;
+    height: 0;
+}
+
+.grid-container {
+    padding: 1em;
+    margin: 0;
+    width: 100%;
+    z-index: 10;
+    clear: none;
+    overflow: hidden;
+    height: auto;
+}
+
+.repo-settings.config-mode .config {
+    margin-left: 0;
+    height: auto;
+}
+
+.repo-settings.config-mode .grid-container {
+    margin-right: 100%;
+    opacity: 0;
+    height: 0;
+    padding: 0;
+}
+
+.integration-grid {
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 4em;
+    grid-row-gap: 0;
+    overflow: hidden;
+    background-color: whitesmoke;
+    clear: both;
+}
+
+form.integration-form {
+    font-family: 'Roboto', sans-serif;
+    margin: 2em auto;
+    display: table;
+}
+
+form.integration-form > div {
+    display: table-row;
+}
+
+label, input {
+    display: table-cell;
+    margin-bottom: 2em;
+}
+
+label {
+    padding-right: 1em;
+}
+
+input {
+    font-size: 1em;
+    text-align: center;
+    color: #222;
+}
+
+input:invalid {
+    border: 2px solid #e69138;
+    background-color: lightyellow;
+}
+
+.notes, .details, .warning {
+    margin: 1.5em 15%;
+    text-align: center;
+}
+
+.notes {
+    color: grey;
+}
+
+.warning {
+    color: #e69138;
+    font-style: italic;
+    margin: 1em 15%;
+}
+
+label .warning {
+    text-align: left;
+    margin: 0;
+    padding: 0;
+}

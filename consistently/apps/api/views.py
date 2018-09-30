@@ -94,7 +94,7 @@ class IntegrationListView(
     def get_queryset(self):
 
         # ensure that all available integrations exist for the repo
-        repo = Repository.objects.get(pk=self.kwargs['repo'])
+        repo = Repository.objects.get(pk=self.kwargs['github_id'])
         for Klass in INTEGRATION_TYPES.values():
             try:
                 i = Klass.objects.get(repo=repo)

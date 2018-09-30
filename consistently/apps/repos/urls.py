@@ -16,5 +16,9 @@ urlpatterns = [
     path(
         'g/<prefix>/<name>/',
         views.RepositoryDetailView.as_view(),
-        name='repo-detail')
+        name='repo-detail'),
+    path(
+        'g/<prefix>/<name>/conf/',
+        views.RepositorySettingsView.as_view(),
+        name='repo-settings')
 ]

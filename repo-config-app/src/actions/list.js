@@ -3,25 +3,25 @@ import "cross-fetch/polyfill";
 const API_ROOT = process.env.REACT_APP_APIURL;
 
 
-export const profileRequest = () => ({
-  type: 'PROFILE_REQUEST'
+export const listRequest = () => ({
+  type: 'LIST_REQUEST'
 });
-export const profileSuccess = repoList => ({
-  type: 'PROFILE_SUCCESS',
-  repoList
+export const listSuccess = list => ({
+  type: 'LIST_SUCCESS',
+  list
 });
-export const profileFailure = error => ({
-  type: 'PROFILE_FAILURE',
+export const listFailure = error => ({
+  type: 'LIST_FAILURE',
   error
 });
 
-export const getProfile = () => {
+export const getList = () => {
 
   return dispatch => {
 
-    let url = API_ROOT + "profile-repos/";
+    let url = API_ROOT + "integrations/" + window.repo.github_id + "/";
 
-    dispatch(profileRequest())
+    dispatch(listRequest())
 
     return fetch(url)
       // Try to parse the response
@@ -35,18 +35,17 @@ export const getProfile = () => {
         ({ status, json }) => {
           if (status >= 400) {
             // Status looks bad
-            dispatch(profileFailure(status));
+            dispatch(listFailure(status));
           }
           else {
             // Status looks good
-            dispatch(profileSuccess(json))
+            dispatch(listSuccess(json))
           }
         },
         // Either fetching or parsing failed!
         err => {
-          dispatch(profileFailure(err.message))
+          dispatch(listFailure(err.message))
         }
       );
-
   }
 }

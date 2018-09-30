@@ -34,10 +34,12 @@
     right: 1.5em;
     /*text-align: right;*/
     /*filter: drop-shadow(-4px 4px 4px #999);*/
+    box-shadow: -1px 2px 3px darkgrey;
 }
 
 #left-menu {
     left: 1.5em;
+    box-shadow: 1px 2px 3px darkgrey;
 }
 
 .menu {
@@ -50,6 +52,7 @@
     justify-content: center;
     flex-direction: column;
     text-align: center;
+    z-index: 100;
 }
 
 .menu a,

@@ -36,9 +36,7 @@ class PrefixRepoListView(TemplateView):
         return _context
 
 
-class RepositoryDetailView(DetailView):
-
-    template_name = "repos/repo_detail.html"
+class RepoDetailMixin(object):
     model = Repository
     context_object_name = "repo"
 
@@ -48,6 +46,10 @@ class RepositoryDetailView(DetailView):
             is_active=True,
             prefix=self.kwargs['prefix'],
             name=self.kwargs['name'])
+
+
+class RepositoryDetailView(RepoDetailMixin, DetailView):
+    template_name = "repos/repo_detail.html"
 
     def get_context_data(self, **kwargs):
         """
@@ -63,6 +65,10 @@ class RepositoryDetailView(DetailView):
 
         _context['integrationstatus_list'] = integrationstatus_list
         return _context
+
+
+class RepositorySettingsView(RepoDetailMixin, DetailView):
+    template_name = "repos/repo_settings.html"
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):

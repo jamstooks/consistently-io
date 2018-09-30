@@ -1,0 +1,33 @@
+.integration-logo {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 75% 75%;
+    background-color: transparent;
+    
+    cursor: pointer;
+    padding-top: 100%; /* 1:1 Aspect Ratio */
+    /*position: relative;*/
+}
+
+.integration-logo:hover {
+    background-color: #ddd;
+    background-position: 52% 52%;
+}
+
+.integration-logo.html {
+    background-image: url('../img/html_shield.svg');
+}
+
+.integration-logo.travis {
+    background-image: url('../img/tessa-pride-4.png');
+}
+
+
+.integration-logo.active:after {   
+    content: url('../img/check_icon.svg');
+    width: 35%;
+    height: 35%;
+    float: right;
+    margin: -95% 5% 0 0;
+    display: inline;
+}

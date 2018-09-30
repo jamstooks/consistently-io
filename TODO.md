@@ -1,8 +1,6 @@
 # Todo List
 
-- [x] profile API endpoint should return repo-url and django id
-- [ ] get the toggle working!
-- [x] profile loading indicator
+- [ ] Cache HasRepoAccess for a minute or two given the frequency of use
 
 ## Down the road...
 

@@ -50,7 +50,7 @@
     background-color: lightgrey;
 }
 
-.repo-box-toggle {
+.toggle-switch {
     flex-grow: 1;
     text-align: center;
     width: 3em;
@@ -60,40 +60,34 @@
     font-size: 2em;
     margin: 0;
     padding: 0;
-    /*overflow: hidden;*/
     cursor: pointer;
     background-color: darkgrey;
     color: grey;
     text-align: center;
     background-repeat: no-repeat;
-    background-size: 80%;
+    background-size: auto 70%;
     background-position: center;
     color: transparent;
 }
 
-.repo-box-toggle img {
-    width: 2.2em;
-    margin: 0 .5em;
-}
-
-.repo-box-toggle.inactive {
+.toggle-switch.inactive {
     background-image: url('../img/toggle_off.svg');
 }
 
-.repo-box-toggle.inactive:hover {
+.toggle-switch.inactive:hover {
     background-color: #999999;
 }
 
-.repo-box-toggle.active {
+.toggle-switch.active {
     background-color: #b6d7a8;
     background-image: url('../img/toggle_on.svg');
 }
 
-.repo-box-toggle.fetching {
+.toggle-switch.fetching {
     background-image: url('../img/toggle_empty.svg');
 }
 
-.repo-box-toggle.active:hover {
+.toggle-switch.active:hover {
     background-color: #93c47d;
 }
 
@@ -106,7 +100,7 @@
     }
 }
 
-.repo-box-toggle.fetching::after {
+.toggle-switch.fetching::after {
     content: url('../img/loading_icon.svg');
     /*background-color: red;*/
     width: .7em;
@@ -118,7 +112,7 @@
     transform-origin: center center;
 }
 
-.repo-box-toggle.active>.fas {
+.toggle-switch.active>.fas {
     transform: rotate(180deg);
 }
 

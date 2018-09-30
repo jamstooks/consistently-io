@@ -34,7 +34,7 @@ class StatusBox extends React.Component {
         <div className="repo-box-repo">{repoName}</div>
         { settings }
         <div
-          className={'repo-box-toggle ' + className}
+          className={'toggle-switch ' + className}
           onClick={this.props.toggle}
           ></div>
       </div>

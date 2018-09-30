@@ -30,7 +30,7 @@ urlpatterns = [
         views.ToggleRepositoryViewSet.as_view(),
         name='toggle-repo'),
     path(
-        'integrations/<int:repo>/',
+        'integrations/<int:github_id>/',
         views.IntegrationListView.as_view({'get': 'list'}),
         name='integration-list'),
     path(

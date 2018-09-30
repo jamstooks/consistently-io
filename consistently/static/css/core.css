@@ -5,6 +5,11 @@ body {
   margin: 0;
 }
 
+strong {
+  color: #222;
+  font-weight: normal;
+}
+
 .center {
   text-align: center;
 }
@@ -16,6 +21,7 @@ body {
 
 .content {
   padding: 0 1em;
+  margin: 0;
 }
 
 h1 {
@@ -58,4 +64,23 @@ a:hover {
   height: 10em;
   padding: 1em;
   margin: auto;
+}
+
+.back-button, a.back-button {
+  background-color: lightgrey;
+  color: white;
+  position: relative;
+  left: 0;
+  top: 0;
+  margin: 0 0 0 -1rem;
+  padding: 0 2rem;
+  font-size: 3em;
+  z-index: 10;
+  display: inline;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #aaa;
+  color: lightgrey
 }

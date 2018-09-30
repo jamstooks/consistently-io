@@ -140,7 +140,7 @@ class IntegrationListTestCase(BaseAPITestCase):
         super(IntegrationListTestCase, self).setUp()
         self.url = reverse(
             'api:integration-list',
-            kwargs={'repo': self.repo.id})
+            kwargs={'github_id': self.repo.id})
 
     def test_list(self):
 
