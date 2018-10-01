@@ -14,10 +14,7 @@ lack of a better option.
 ## State Shape
 
     {
-      repo: {
-        github_id: <int>,
-        ...
-      },
+      fetchingList: <bool>,
       integrations: {
         <int:id>: {
           integration_type: <string>,
@@ -26,6 +23,7 @@ lack of a better option.
         ...
       },
       currentIntegration: {
+        isFetching: <bool>,
         id: <int>,
         is_active: <bool>,
         ...<unique props>

@@ -94,7 +94,7 @@ class IntegrationListView(
     def get_queryset(self):
 
         # ensure that all available integrations exist for the repo
-        repo = Repository.objects.get(pk=self.kwargs['github_id'])
+        repo = Repository.objects.get(github_id=self.kwargs['github_id'])
         for Klass in INTEGRATION_TYPES.values():
             try:
                 i = Klass.objects.get(repo=repo)
@@ -102,6 +102,18 @@ class IntegrationListView(
                 Klass.objects.create(repo=repo)
 
         return Integration.objects.filter(repo=repo)
+
+    # def list(self, request, *args, **kwargs):
+    #     """
+    #     Each integration should use the right serializer
+    #     """
+    #     queryset = self.get_queryset()
+    #     data = []
+    #     for integration in queryset:
+    #         serializerClass = integration.type_instance.get_serializer_class()
+    #         serializer = serializerClass(integration)
+    #         data.append(serializer.data)
+    #     return Response(data)
 
 
 class IntegrationDetailView(
@@ -117,7 +129,9 @@ class IntegrationDetailView(
 
     def get_object(self):
         i = get_object_or_404(
-            Integration, repo_id=self.kwargs['repo'], pk=self.kwargs['pk'])
+            Integration,
+            repo__github_id=self.kwargs['github_id'],
+            pk=self.kwargs['pk'])
         self.check_object_permissions(self.request, i)
         return i.type_instance
 

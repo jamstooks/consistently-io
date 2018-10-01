@@ -14,4 +14,15 @@ export const mockProfileRepos = [{
     'settings_url': '#',
     'id': 2
   }
-]
+];
+
+export const mockSettings = [
+  { id: 1, is_active: false, type: 'html' },
+  { id: 2, is_active: false, type: 'travis' }
+];
+
+export const mockIntegration = {
+  is_active: false,
+  url_to_validate: null,
+  deployment_delay: null
+};

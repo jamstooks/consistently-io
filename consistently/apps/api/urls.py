@@ -34,7 +34,7 @@ urlpatterns = [
         views.IntegrationListView.as_view({'get': 'list'}),
         name='integration-list'),
     path(
-        'integrations/<int:repo>/<int:pk>/',
+        'integrations/<int:github_id>/<int:pk>/',
         views.IntegrationDetailView.as_view(
             {'get': 'retrieve', 'patch': 'update'}),
         name='integration-detail')

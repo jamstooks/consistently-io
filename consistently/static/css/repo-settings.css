@@ -1,3 +1,8 @@
+.settingsApp {
+    width: 100%;
+    overlow: hidden;
+}
+
 .repo-settings {
     /*display: grid;*/
     background-color: whitesmoke;

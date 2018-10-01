@@ -22,7 +22,7 @@ const profile = (
       ...state,
       ...{
         isFetching: false,
-        repoList: action.repoList,
+        repoList: action.json,
         error: null
       }
     };
@@ -48,7 +48,6 @@ const profile = (
       ...{ repoList: rl }
     };
 
-    console.log(newState);
     return newState;
   case "TOGGLE_SUCCESS":
 

@@ -70,6 +70,14 @@ class RepositoryDetailView(RepoDetailMixin, DetailView):
 class RepositorySettingsView(RepoDetailMixin, DetailView):
     template_name = "repos/repo_settings.html"
 
+    def get_context_data(self, **kwargs):
+
+        _context = super(RepositorySettingsView,
+                         self).get_context_data(**kwargs)
+        _context['main_js'] = settings.REACT_JS_PATH
+        _context['main_css'] = settings.REACT_CSS_PATH
+        return _context
+
 
 class ProfileView(LoginRequiredMixin, TemplateView):
 

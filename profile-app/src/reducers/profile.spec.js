@@ -1,5 +1,5 @@
-import profile from "./";
-import { mockProfileRepos } from "../mockData"
+import profile from "./profile";
+import { mockProfileRepos } from "../testUtils/mockData"
 
 
 describe("profile reducer", () => {
@@ -35,7 +35,7 @@ describe("profile reducer", () => {
         error: null
       }, {
         type: "PROFILE_SUCCESS",
-        repoList: mockProfileRepos
+        json: mockProfileRepos
       })
     ).toEqual({
       isFetching: false,

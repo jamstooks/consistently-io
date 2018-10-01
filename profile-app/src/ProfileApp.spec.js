@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import ProfileApp from './ProfileApp';
 
 // added mock fetch for Profile component's `componentDidMount` calls
 import fetchMock from "fetch-mock";
-import { mockProfileRepos } from "./mockData"
+import { mockProfileRepos } from "./testUtils/mockData"
 
 
 it('renders without crashing', () => {
@@ -13,7 +13,7 @@ it('renders without crashing', () => {
 
 
   const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
+  ReactDOM.render(<ProfileApp />, div);
   ReactDOM.unmountComponentAtNode(div);
 
   fetchMock.reset();

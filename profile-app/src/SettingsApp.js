@@ -4,28 +4,25 @@ import thunkMiddleware from "redux-thunk";
 import { createLogger } from "redux-logger";
 import { Provider } from "react-redux";
 
-import Profile from "./containers/Profile";
-import rootReducer from "./reducers";
+import Settings from "./containers/Settings";
+import rootReducer from "./reducers/integrations";
 
 
 const loggerMiddleware = createLogger();
 
 const store = createStore(
   rootReducer,
-  applyMiddleware(
-    thunkMiddleware, // lets us dispatch() functions
-    loggerMiddleware,
-  )
+  applyMiddleware(thunkMiddleware, loggerMiddleware)
 );
 
-class App extends Component {
+class SettingsApp extends Component {
   render() {
     return (
       <Provider store={store}>
-        <Profile/>
+        <Settings/>
       </Provider>
     );
   }
 }
 
-export default App;
+export default SettingsApp;
