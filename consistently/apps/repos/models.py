@@ -31,8 +31,9 @@ class Repository(TimeStampedModel):
 
 class Commit(models.Model):
     repo = models.ForeignKey(Repository, on_delete=models.CASCADE)
-    sha = models.CharField(max_length=40)
-    date = models.DateTimeField()
+    sha = models.CharField(max_length=40, unique=True)
+    message = models.TextField(blank=True, null=True)
+    github_timestamp = models.DateTimeField()
 
     def __str__(self):
         return self.sha[:6]

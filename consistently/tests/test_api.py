@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 
 from .base import BaseTestCase
-from consistently.apps.repos.models import Repository
+from consistently.apps.repos.models import Repository, Commit
 from consistently.apps.integrations.models import Integration, INTEGRATION_TYPES
 from consistently.apps.integrations.types.html.models import HTMLValidation
 
@@ -140,7 +140,7 @@ class IntegrationListTestCase(BaseAPITestCase):
         super(IntegrationListTestCase, self).setUp()
         self.url = reverse(
             'api:integration-list',
-            kwargs={'github_id': self.repo.id})
+            kwargs={'github_id': self.repo.github_id})
 
     def test_list(self):
 
@@ -225,7 +225,7 @@ class IntegrationDetailTestCase(BaseAPITestCase):
             format='json')
         data = loads(response.content)
         self.assertEqual(
-            data['url_to_validate'], ['This field is required when active.'])
+            data['url_to_validate'], ['Required when active.'])
 
         self.html.refresh_from_db()
         self.assertFalse(self.html.is_active)
@@ -241,7 +241,7 @@ class IntegrationDetailTestCase(BaseAPITestCase):
             format='json')
         data = loads(response.content)
         self.assertEqual(
-            data['url_to_validate'], ['This field is required when active.'])
+            data['url_to_validate'], ['Required when active.'])
 
         self.html.refresh_from_db()
         self.assertFalse(self.html.is_active)
@@ -258,3 +258,39 @@ class IntegrationDetailTestCase(BaseAPITestCase):
         self.html.refresh_from_db()
         self.assertEqual(self.html.url_to_validate, valid_url)
         self.assertTrue(self.html.is_active)
+
+
+class GithubWebhookTestCase(BaseAPITestCase):
+    """
+    Test handling of the github webhook
+    """
+
+    def setUp(self):
+        """
+            Set the url and api client
+        """
+        super(GithubWebhookTestCase, self).setUp()
+        self.initial_commit_count = Commit.objects.count()
+
+    def test_list(self):
+
+        url = reverse('api:github-webhook')
+
+        good_payload = {
+            "ref": "refs/heads/master",
+            "head_commit": {
+                "id": "121212",
+                "message": "test commit",
+                "timestamp": "2018-10-02T16:01:56-04:00"
+            },
+            "repository": {
+                "id": self.repo.github_id
+            }
+        }
+
+        response = self.client.post(
+            url, good_payload, format='json')
+        data = loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['status'], "ACCEPTED")
+        self.assertEqual(Commit.objects.count(), self.initial_commit_count + 1)

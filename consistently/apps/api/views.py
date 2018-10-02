@@ -1,5 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.db.utils import IntegrityError
+from json import loads
 
 from rest_framework import generics
 from rest_framework import mixins
@@ -11,7 +13,7 @@ from rest_framework.views import APIView
 
 from github import Github
 
-from consistently.apps.repos.models import Repository
+from consistently.apps.repos.models import Repository, Commit
 from consistently.apps.integrations.models import Integration, INTEGRATION_TYPES
 from consistently.apps.integrations.types.html.models import HTMLValidation
 from .serializers import (
@@ -81,6 +83,33 @@ class ToggleRepositoryViewSet(generics.UpdateAPIView):
     lookup_field = 'github_id'
     permission_classes = (IsAuthenticated, HasRepoAccess)
 
+    def update(self, request, *args, **kwargs):
+        """
+        Set the webhook
+
+        Considered doing this on the save method of the model, but
+        felt like the logic was better here.
+        """
+        response = super(ToggleRepositoryViewSet, self).update(
+            request, args, kwargs)
+        obj = self.get_object()
+
+        # Set up github connection and get the repo reference
+        # github = self.request.user.social_auth.get(provider='github')
+        # token = github.extra_data['access_token']
+        # g = Github(token)
+        # repo = g.get_repo(obj.github_id)
+        # import pdb
+        # pdb.set_trace()
+        # hooks = [h for h in repo.get_hooks()]
+        # import pdb
+
+        # is_active = self.get_object().is_active
+        # If the status is active create (or confirm) the webhook
+
+        # if the status is inactive remove the webhook
+        return response
+
 
 class IntegrationListView(
         mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -91,7 +120,7 @@ class IntegrationListView(
     """
     queryset = Integration.objects.all()
     serializer_class = IntegrationListSerializer
-    # permission_classes = (IsAuthenticated, HasRepoAccess)
+    permission_classes = (IsAuthenticated, HasRepoAccess)
 
     def get_queryset(self):
 
@@ -140,3 +169,73 @@ class IntegrationDetailView(
 
     def get_serializer_class(self):
         return self.get_object().get_serializer_class()
+
+
+class GithubWebhookView(APIView):
+    """
+    handles webooks connectons from github
+    """
+
+    def post(self, request, format=None):
+
+        try:
+            obj = loads(request.body)
+            github_id = obj['repository']['id']
+            try:
+                repo = Repository.objects.get(github_id=github_id)
+            except:
+                return Response(data={
+                    'status': "REJECTED",
+                    'message': "Repository does not exist on Consistently.io"
+                }, status=400)
+
+            if not repo.is_active:
+                return Response(data={
+                    'status': "REJECTED",
+                    'repo': repo.name,
+                    'message': "Repository not active on Consistently.io"
+                }, status=400)
+
+            # accept only pushes to master
+            if obj['ref'] != "refs/heads/master":
+                return Response(data={
+                    'status': "REJECTED",
+                    'repo': repo.name,
+                    'message': "Does not apply to master"
+                }, status=400)
+
+            commit_id = obj['head_commit']['id']
+
+            # add a new commit to the repository
+            try:
+                commit = Commit.objects.create(
+                    repo=repo,
+                    sha=obj['head_commit']['id'],
+                    message=obj['head_commit']['message'],
+                    github_timestamp=obj['head_commit']['timestamp']
+                )
+            except IntegrityError:
+                return Response(data={
+                    'status': "REJECTED",
+                    'repo': repo.name,
+                    'commit': obj['head_commit']['id'],
+                    'message': "Commit already received"
+                }, status=400)
+
+            # queue up worker to... (process commit)
+            #  identify all active integrations for this repository
+            #  create initial IntegrationStatus objects
+            #  queue up worker for each IntegrationStatus
+
+            # log the latest commit
+            return Response(data={
+                'status': "ACCEPTED",
+                'repo': repo.name,
+                'commit': commit.sha
+            }, status=200)
+
+        except:
+            return Response(data={
+                'status': "ERROR",
+                'message': "Unknown Error"
+            }, status=500)

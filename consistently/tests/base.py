@@ -69,7 +69,8 @@ class BaseTestCase(TestCase):
         self.commit = Commit.objects.create(
             repo=self.repo,
             sha="bogus-sha",
-            date=datetime.datetime.now(datetime.timezone.utc))
+            message="commit message",
+            github_timestamp=datetime.datetime.now(datetime.timezone.utc))
 
         self.repo.latest_commit = self.commit
         self.repo.save()

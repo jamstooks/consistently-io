@@ -44,7 +44,7 @@ class SerializerTestCase(BaseTestCase):
         self.assertFalse(serializer.is_valid())
         self.assertEqual(
             str(serializer.errors['url_to_validate'][0]),
-            'This field is required when active.')
+            'Required when active.')
 
         # 'url_to_validate' must be a valid URL
         serializer_data['url_to_validate'] = "abc"

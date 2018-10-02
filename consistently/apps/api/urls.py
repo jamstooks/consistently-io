@@ -1,26 +1,12 @@
 from rest_framework.urlpatterns import format_suffix_patterns
 from django.conf.urls import url, include
 from django.urls import path
-from rest_framework.routers import DefaultRouter
-
 from . import views
 
 
 app_name = 'api'
 
-router = DefaultRouter()
-# router.register(r'repos', views.ToggleRepositoryViewSet)
-# router.register(r'integrations', views.IntegrationViewSet)
-# router.register(r'integrations-html', views.HTMLValidationViewSet)
-
 urlpatterns = [
-    # url(r'^', include(router.urls)),
-
-    # url(
-    #     r'^integration-type/<slug:type>/<id:id>/',
-    #     views.HTMLValidationViewSet.as_view(),
-    #     name='integration-types'),
-
     path(
         'profile-repos/',
         views.GithubReposView.as_view(),
@@ -37,5 +23,11 @@ urlpatterns = [
         'integrations/<int:github_id>/<int:pk>/',
         views.IntegrationDetailView.as_view(
             {'get': 'retrieve', 'patch': 'update'}),
-        name='integration-detail')
+        name='integration-detail'),
+
+    path(
+        'consistently-io-github-webhook/',
+        views.GithubWebhookView.as_view(),
+        name="github-webhook"
+    )
 ]
