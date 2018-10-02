@@ -11,7 +11,27 @@ let BASE_STATE = {
     id: null,
     isFetching: false,
     error: null,
-    obj: null
+    obj: null,
+    form: null
+  }
+};
+
+let FORM_STATE = {
+  integrations: {
+    isFetching: false,
+    list: [{ id: 1 }],
+    error: null
+  },
+  current: {
+    id: null,
+    isFetching: false,
+    error: null,
+    obj: null,
+    form: {
+      isUpdating: false,
+      values: { one: 1 },
+      errors: null
+    }
   }
 };
 
@@ -64,7 +84,8 @@ describe("integrations reducer", () => {
       id: 1,
       isFetching: true,
       error: null,
-      obj: null
+      obj: null,
+      form: null
     });
   });
 
@@ -79,7 +100,12 @@ describe("integrations reducer", () => {
       id: 1,
       isFetching: false,
       error: null,
-      obj: mockIntegration
+      obj: mockIntegration,
+      form: {
+        isUpdating: false,
+        values: mockIntegration,
+        errors: null
+      }
     });
   });
 
@@ -94,27 +120,35 @@ describe("integrations reducer", () => {
       id: 1,
       isFetching: false,
       error: "ERR!",
-      obj: null
+      obj: null,
+      form: null
     });
   });
 
   it("should handle UPDATE_REQUEST", () => {
     expect(
-      integrations(BASE_STATE, {
+      integrations(FORM_STATE, {
         type: "UPDATE_REQUEST",
         id: 1
       }).current
     ).toEqual({
       id: 1,
-      isFetching: true,
+      isFetching: false,
       error: null,
-      obj: null
+      obj: null,
+      form: {
+        isUpdating: true,
+        values: { one: 1 },
+        errors: null
+      }
     });
   });
 
   it("should handle UPDATE_SUCCESS", () => {
+
+    // test current
     expect(
-      integrations(BASE_STATE, {
+      integrations(FORM_STATE, {
         type: "UPDATE_SUCCESS",
         id: 1,
         json: mockIntegration
@@ -123,13 +157,27 @@ describe("integrations reducer", () => {
       id: 1,
       isFetching: false,
       error: null,
-      obj: mockIntegration
+      obj: mockIntegration,
+      form: {
+        isUpdating: false,
+        values: mockIntegration,
+        errors: null
+      }
     });
+
+    // test actual
+    expect(
+      integrations(FORM_STATE, {
+        type: "UPDATE_SUCCESS",
+        id: 1,
+        json: mockIntegration
+      }).integrations.list[0].is_active
+    ).toEqual(mockIntegration.is_active);
   });
 
   it("should handle UPDATE_FAILURE", () => {
     expect(
-      integrations(BASE_STATE, {
+      integrations(FORM_STATE, {
         type: "UPDATE_FAILURE",
         id: 1,
         error: "ERR!"
@@ -137,25 +185,24 @@ describe("integrations reducer", () => {
     ).toEqual({
       id: 1,
       isFetching: false,
-      error: "ERR!",
-      obj: null
+      error: null,
+      obj: null,
+      form: {
+        isUpdating: false,
+        values: { one: 1 },
+        errors: "ERR!"
+      }
     });
   });
 
-
-  it("should handle UPDATE_FAILURE", () => {
+  it("should handle UPDATE_FORM_VALUE", () => {
     expect(
-      integrations(BASE_STATE, {
-        type: "UPDATE_FAILURE",
-        id: 1,
-        error: "ERR!"
-      }).current
-    ).toEqual({
-      id: 1,
-      isFetching: false,
-      error: "ERR!",
-      obj: null
-    });
+      integrations(FORM_STATE, {
+        type: "UPDATE_FORM_VALUE",
+        key: 'one',
+        value: 2
+      }).current.form.values
+    ).toEqual({ one: 2 });
   });
 
 });

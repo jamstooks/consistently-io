@@ -73,3 +73,11 @@ it("deselectIntegration should create DESELECT_INTEGRATION action", () => {
     type: "DESELECT_INTEGRATION"
   });
 });
+
+it("updateFormValue should create UPDATE_FORM_VALUE action", () => {
+  expect(actions.updateFormValue('key', 'value')).toEqual({
+    type: "UPDATE_FORM_VALUE",
+    key: 'key',
+    value: 'value'
+  });
+});

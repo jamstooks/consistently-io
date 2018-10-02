@@ -46,7 +46,12 @@ export const testFetch = (
     });
 
     it(method.name + " failure creates the right actions", () => {
-      fetchMock.mock('*', 500);
+      fetchMock.mock('*', {
+        status: 500,
+        body: JSON.stringify({
+          someJson: "someval"
+        })
+      });
 
       const store = mockStore({});
       return store.dispatch(method(...params)).then(() => {
@@ -54,5 +59,21 @@ export const testFetch = (
         expect(store.getActions()[1].type).toEqual(expectedFailureActions[1].type);
       });
     });
+
+    it(method.name + " failure creates the right actions", () => {
+      fetchMock.mock('*', {
+        status: 400,
+        body: JSON.stringify({
+          someJson: "someval"
+        })
+      });
+
+      const store = mockStore({});
+      return store.dispatch(method(...params)).then(() => {
+        expect(store.getActions()[0]).toEqual(expectedFailureActions[0]);
+        expect(store.getActions()[1].type).toEqual(expectedFailureActions[1].type);
+      });
+    });
+
   });
 }

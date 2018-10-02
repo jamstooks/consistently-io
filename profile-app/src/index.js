@@ -5,7 +5,6 @@ import registerServiceWorker from './registerServiceWorker';
 import ProfileApp from './ProfileApp';
 import SettingsApp from './SettingsApp';
 
-console.log("START");
 
 let profile = document.getElementById('profileApp');
 if (profile !== undefined && profile !== null) {

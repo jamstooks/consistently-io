@@ -62,7 +62,9 @@ class GithubReposView(APIView):
                         'name': repo.name,
                         'github_id': gr.id,
                         'is_active': repo.is_active,
-                        'settings_url': "#"  # @todo
+                        'settings_url': reverse(
+                            'repos:repo-settings',
+                            kwargs={'prefix': repo.prefix, 'name': repo.name}),
                     })
 
         return Response(repo_list)
@@ -89,7 +91,7 @@ class IntegrationListView(
     """
     queryset = Integration.objects.all()
     serializer_class = IntegrationListSerializer
-    permission_classes = (IsAuthenticated, HasRepoAccess)
+    # permission_classes = (IsAuthenticated, HasRepoAccess)
 
     def get_queryset(self):
 
@@ -103,17 +105,18 @@ class IntegrationListView(
 
         return Integration.objects.filter(repo=repo)
 
-    # def list(self, request, *args, **kwargs):
-    #     """
-    #     Each integration should use the right serializer
-    #     """
-    #     queryset = self.get_queryset()
-    #     data = []
-    #     for integration in queryset:
-    #         serializerClass = integration.type_instance.get_serializer_class()
-    #         serializer = serializerClass(integration)
-    #         data.append(serializer.data)
-    #     return Response(data)
+    def list(self, request, *args, **kwargs):
+        """
+        Each integration should use the right serializer
+        """
+        queryset = self.get_queryset()
+        data = []
+        for integration in queryset:
+            # serializerClass = integration.type_instance.get_serializer_class()
+            instance = integration.type_instance
+            serializer = self.serializer_class(instance)
+            data.append(serializer.data)
+        return Response(data)
 
 
 class IntegrationDetailView(

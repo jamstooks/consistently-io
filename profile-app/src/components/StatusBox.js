@@ -24,9 +24,10 @@ class StatusBox extends React.Component {
       null :
       (<div
           className={'repo-box-settings ' + className}>
-          <a
-            href={this.props.repo.settings_url}
-            className="settings-link"></a>
+          <a href={this.props.repo.settings_url}
+            className="settings-link">
+            <span class="screen-reader">settings</span>
+          </a>
         </div>);
 
     return (

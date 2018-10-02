@@ -18,7 +18,7 @@ class Integration(TimeStampedModel):
     """
 
     integration_type = models.CharField(max_length=40)
-    repo = models.OneToOneField(Repository, on_delete=models.CASCADE)
+    repo = models.ForeignKey(Repository, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=False)
 
     def __str__(self):
@@ -36,9 +36,11 @@ class Integration(TimeStampedModel):
     def has_settings(self):
         """
         Some integrations my not have additional properties. If that's the
-        case, then this can return False
+        case, then this can return False.
 
-        @todo - this should be able to figure this out from the fields
+        @note - This isn't used yet, but might be for one-click activation.
+
+        @todo - implmenent
         """
         raise NotImplementedError
 
@@ -56,7 +58,8 @@ class Integration(TimeStampedModel):
         raise NotImplementedError
 
     def get_serializer_class(self):
-        raise NotImplementedError
+        from consistently.apps.api.serializers import BasicIntegrationSerializer
+        return BasicIntegrationSerializer
 
     def run(self, commit):
         raise NotImplementedError
@@ -104,6 +107,8 @@ class IntegrationStatus(TimeStampedModel):
     Imported down here to avoid recursive imports
 """
 from .types.html.models import HTMLValidation
+from .types.travis.models import Travis
 
 INTEGRATION_TYPES = OrderedDict()
 INTEGRATION_TYPES['html'] = HTMLValidation
+INTEGRATION_TYPES['travis'] = Travis

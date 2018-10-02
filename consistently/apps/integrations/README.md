@@ -13,8 +13,6 @@ Integrations have a set structure.
             ├── models.py
             ├── serializer.py
             ├── tests.py
-            └── static/
-                └── logo.png
 
 # Create the IntegrationConfig model
 
@@ -35,16 +33,14 @@ or update an `IntegrationStatus` object for the commit.
 # Add a Serializer
 
 Your serializer will be used to validate a user's configuration for your
-integration...
+integration. You actually only need one if your integration has specific
+properties, like a delay or URL.
+
+# Style it up!
+
+Add your logo to `static/img/integrations` and your
+styles to `static/css/integrations.css`.
 
 # Add tests
 
 Test all your things! This includes integration tests for your `run` method.
-
-# Validation
-
-Since integration objects exist before they have values, we'll need to
-perform some additional validation when they are set to active.
-Django Rest Framework doesn't support the clean method by default, but
-[we can still use it](http: // www.django-rest-framework.org/topics/3.0-announcement /  # differences-between-modelserializer-validation-and-modelform)
-for validation in the api.

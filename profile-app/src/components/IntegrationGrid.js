@@ -22,13 +22,15 @@ class IntegrationGrid extends React.Component {
         classes += " active";
       }
       integrations.push(
-        (<div className={classes} onClick={() => this.props.select(i.id)}></div>)
-      )
+        (<div key={i.id} className={classes} onClick={() => this.props.select(i.id)}>
+          <span class="screen-reader">{classes}</span>
+        </div>)
+      );
     });
 
     return (
-      <div class="grid-container">
-        <div class="integration-grid">
+      <div className="grid-container">
+        <div className="integration-grid">
           {integrations}
         </div>
       </div>

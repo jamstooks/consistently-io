@@ -166,17 +166,17 @@ class IntegrationDetailTestCase(BaseAPITestCase):
         self.html = HTMLValidation.objects.create(repo=self.repo)
         self.url = reverse(
             'api:integration-detail',
-            kwargs={'repo': self.repo.id, 'pk': self.html.pk})
+            kwargs={'github_id': self.repo.github_id, 'pk': self.html.pk})
         self.private_url = reverse(
             'api:integration-detail',
             kwargs={
-                'repo': self.private_repo.id,
+                'github_id': self.private_repo.github_id,
                 'pk': self.private_html.pk
             })
         self.restricted_url = reverse(
             'api:integration-detail',
             kwargs={
-                'repo': self.restricted_repo.id,
+                'github_id': self.restricted_repo.github_id,
                 'pk': self.restricted_html.pk
             })
 
@@ -194,7 +194,7 @@ class IntegrationDetailTestCase(BaseAPITestCase):
 
         url = reverse(
             'api:integration-detail',
-            kwargs={'repo': 12222, 'pk': 19999})
+            kwargs={'github_id': 12222, 'pk': 19999})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 
@@ -220,6 +220,22 @@ class IntegrationDetailTestCase(BaseAPITestCase):
             {
                 'is_active': True,
                 'url_to_validate': None,
+                'deployment_delay': None
+            },
+            format='json')
+        data = loads(response.content)
+        self.assertEqual(
+            data['url_to_validate'], ['This field is required when active.'])
+
+        self.html.refresh_from_db()
+        self.assertFalse(self.html.is_active)
+
+        # additional validation
+        response = self.client.patch(
+            self.url,
+            {
+                'is_active': True,
+                'url_to_validate': "",
                 'deployment_delay': None
             },
             format='json')

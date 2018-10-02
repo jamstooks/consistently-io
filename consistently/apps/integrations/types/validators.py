@@ -7,7 +7,7 @@ class RequiredIfActive(object):
     This validator makes it easy to add required fields to an Integration
     serializer that are only required when the integration `is_active`.
     """
-    missing_message = _('This field is required when active.')
+    missing_message = _('Required when active.')
 
     def __init__(self, fields):
         self.fields = fields
@@ -20,7 +20,7 @@ class RequiredIfActive(object):
         missing_items = {
             field_name: self.missing_message
             for field_name in self.fields
-            if field_name not in attrs or attrs[field_name] == None
+            if field_name not in attrs or attrs[field_name] == None or attrs[field_name] == ""
         }
         if missing_items:
             raise ValidationError(missing_items, code='required')

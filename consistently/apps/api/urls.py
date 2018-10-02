@@ -14,7 +14,7 @@ router = DefaultRouter()
 # router.register(r'integrations-html', views.HTMLValidationViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
+    # url(r'^', include(router.urls)),
 
     # url(
     #     r'^integration-type/<slug:type>/<id:id>/',

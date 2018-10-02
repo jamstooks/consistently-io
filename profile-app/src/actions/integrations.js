@@ -22,3 +22,9 @@ export const updateIntegration = (id, data) => {
 export const deselectIntegration = () => ({
   type: "DESELECT_INTEGRATION"
 });
+
+export const updateFormValue = (key, value) => ({
+  type: "UPDATE_FORM_VALUE",
+  key,
+  value
+})

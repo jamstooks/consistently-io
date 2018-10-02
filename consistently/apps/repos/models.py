@@ -7,6 +7,7 @@ class Repository(TimeStampedModel):
     """
     This represents a linked github repository.
 
+    @todo - github_id to primary key
     @todo - should we store the latest commit on this model for performance?
     @todo - index on prefix/name
     """

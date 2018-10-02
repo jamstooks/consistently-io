@@ -23,14 +23,17 @@ class Settings extends React.Component {
     }
 
     return (
-      <div class={classes}>
+      <div className={classes}>
         <IntegrationGrid
           isFetching={this.props.integrations.isFetching}
           integrationList={this.props.integrations.list}
           select={this.props.fetchIntegration} />
         <IntegrationConfig
           integration={this.props.current}
-          unselect={this.props.unselect} />
+          allIntegrations={this.props.integrations.list}
+          unselect={this.props.unselect}
+          changeFormValue={this.props.changeFormValue}
+          updateIntegration={this.props.updateIntegration}/>
       </div>
     );
   }
@@ -58,11 +61,15 @@ Settings.propTypes = {
   /**
    * Updates in integration
    */
-  // updateIntegration: PropTypes.func.isRequired,
+  updateIntegration: PropTypes.func.isRequired,
   /**
    * Deselects the current integration
    */
   unselect: PropTypes.func.isRequired,
+  /**
+   * Handles the change of a form value
+   */
+  changeFormValue: PropTypes.func.isRequired
 };
 
 export default Settings;

@@ -3,9 +3,10 @@
     background-position: center center;
     background-size: 75% 75%;
     background-color: transparent;
-    
+
     cursor: pointer;
-    padding-top: 100%; /* 1:1 Aspect Ratio */
+    padding-top: 100%;
+    /* 1:1 Aspect Ratio */
     /*position: relative;*/
 }
 
@@ -14,16 +15,18 @@
     background-position: 52% 52%;
 }
 
-.integration-logo.html {
-    background-image: url('../img/html_shield.svg');
+.integration-logo.html,
+.config.html {
+    background-image: url('../img/integrations/html_shield.svg');
 }
 
-.integration-logo.travis {
-    background-image: url('../img/tessa-pride-4.png');
+.integration-logo.travis,
+.config.travis {
+    background-image: url('../img/integrations/tessa-pride-4.png');
 }
 
 
-.integration-logo.active:after {   
+.integration-logo.active:after {
     content: url('../img/check_icon.svg');
     width: 35%;
     height: 35%;

@@ -76,7 +76,7 @@ const runRequest = (dispatch, url, options, actionTypes, action_params = null) =
       ({ status, json }) => {
         if (status >= 400) {
           dispatch({ ...action_params,
-            ...{ type: failureType, error: status }
+            ...{ type: failureType, error: json }
           });
         }
         else {

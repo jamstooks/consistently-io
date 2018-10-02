@@ -66,7 +66,8 @@ a:hover {
   margin: auto;
 }
 
-.back-button, a.back-button {
+.back-button,
+a.back-button {
   background-color: lightgrey;
   color: white;
   position: relative;
@@ -83,4 +84,10 @@ a:hover {
 .back-button:hover {
   background-color: #aaa;
   color: lightgrey
+}
+
+.screen-reader {
+  color: transparent;
+  float: left;
+  font-size: .1em;
 }

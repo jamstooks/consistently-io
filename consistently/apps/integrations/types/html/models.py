@@ -21,7 +21,7 @@ class HTMLValidation(Integration):
 
     @property
     def description(self):
-        return "service provided by [W3.org](https://validator.w3.org/)"
+        return "**HTML Validation** - service provided by [W3.org](https://validator.w3.org/)"
 
     @property
     def link(self):

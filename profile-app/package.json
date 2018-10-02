@@ -5,8 +5,10 @@
   "dependencies": {
     "cross-fetch": "^2.2.2",
     "fetch-mock": "^7.0.5",
+    "lodash": "^4.17.11",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
+    "react-markdown": "^3.6.0",
     "react-redux": "^5.0.7",
     "react-scripts": "1.1.5",
     "redux": "^4.0.0",

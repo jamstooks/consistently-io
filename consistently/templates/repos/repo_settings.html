@@ -1,7 +1,4 @@
-{% extends "repos/base.html" %}
-{% load static %}
-
-{% block content %} 
+{% extends "repos/base.html" %} {% load static %} {% block content %}
 
 <a href="{% url 'repos:repo-detail' repo.prefix repo.name %}" class="back-button">&lt;&lt;</a>
 
@@ -15,48 +12,7 @@
     window.repo = { github_id: {{ repo.github_id }} };
   </script>
   <div id="settingsApp"></div>
-
-  <!--<div class="repo-settings">-->
-  <!--  <div class="grid-container">-->
-  <!--    <div class="integration-grid">-->
-  <!--      <div class="integration-logo html active"></div>-->
-  <!--      <div class="integration-logo travis active"></div>-->
-  <!--    </div>-->
-  <!--  </div>-->
-
-
-    <!--<div class="config">-->
-    <!--  <div class="back-button">&lt;&lt;</div>-->
-    <!--  <div class="toggle-switch inactive"></div>-->
-
-    <!--  <p class="details">-->
-    <!--    <strong>HTML Validation</strong> - service provided by-->
-    <!--    <a href="#">W3C.org</a>-->
-    <!--  </p>-->
-
-    <!--  <p class="warning">URL is required to activate.</p>-->
-    <!--  <form action="" method="get" class="integration-form">-->
-    <!--    <div>-->
-    <!--      <label for="name">-->
-    <!--                URL to Validate:-->
-    <!--                <p class="warning">Invalid URL.</p>-->
-    <!--              </label>-->
-    <!--      <input type="url" name="name" id="name" required>-->
-    <!--    </div>-->
-    <!--    <div>-->
-    <!--      <label for="delay">Delay (seconds): </label>-->
-    <!--      <input type="number" name="delay" id="delay">-->
-    <!--    </div>-->
-    <!--  </form>-->
-    <!--  <p class="notes">-->
-    <!--    Currently we only support one URL per repo.-->
-    <!--  </p>-->
-    <!--</div>-->
-<!--</div>-->
 </div>
-{% endblock %}
-
-{% block js %}
-  {{ block.super }}
-  <script src="{% static main_js %}"></script>
+{% endblock %} {% block js %} {{ block.super }}
+<script src="{% static main_js %}"></script>
 {% endblock %}

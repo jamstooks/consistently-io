@@ -1,124 +1,145 @@
 .settingsApp {
-    width: 100%;
-    overlow: hidden;
+  width: 100%;
+  overlow: hidden;
 }
 
 .repo-settings {
-    /*display: grid;*/
-    background-color: whitesmoke;
-    overflow: hidden;
-    padding: 0;
-    margin: 0 0 1em 0;
-    color: dimgrey;
+  /*display: grid;*/
+  background-color: whitesmoke;
+  overflow: hidden;
+  padding: 0;
+  margin: 0 0 1em 0;
+  color: dimgrey;
 }
 
 .repo-settings .back-button {
-    margin: 0;
-    font-size: 2rem;
+  margin: 0;
+  font-size: 2rem;
 }
 
 .repo-settings .toggle-switch {
-    font-size: 1rem;
-    height: 2.5em;
-    float: right;
-    max-width: none;
-    min-width: 6em;
+  font-size: 1rem;
+  height: 2.5em;
+  float: right;
+  max-width: none;
+  min-width: 6em;
+  cursor: default;
 }
 
-.config, .grid-container {
-    transition: all .5s linear;
+.repo-settings .toggle-switch.active:hover {
+  background-color: #b6d7a8;
 }
+
+.repo-settings .toggle-switch.inactive:hover {
+  background-color: darkgrey;
+}
+
+.form-loading-indicator {
+  float: right;
+  height: 1.8em;
+  width: 2em;
+  padding: .4em .5em;
+  margin: none;
+}
+
+/*.config, .grid-container {*/
+
+/*    transition: all .5s linear;*/
+
+/*}*/
 
 .config {
-    margin: 0;
-    margin-left: 100%;
-    overflow: hidden;
-    z-index: 11;
-    width: 100%;
-    height: 0;
+  margin: 0;
+  display: none;
+  overflow: hidden;
+  width: 100%;
+  height: auto;
+  background-position: top 1em center;
+  background-repeat: no-repeat;
+  background-size: 2.75em;
 }
 
 .grid-container {
-    padding: 1em;
-    margin: 0;
-    width: 100%;
-    z-index: 10;
-    clear: none;
-    overflow: hidden;
-    height: auto;
+  padding: 1em;
+  margin: 0;
+  width: 100%;
+  overflow: hidden;
 }
 
 .repo-settings.config-mode .config {
-    margin-left: 0;
-    height: auto;
+  display: block;
 }
 
 .repo-settings.config-mode .grid-container {
-    margin-right: 100%;
-    opacity: 0;
-    height: 0;
-    padding: 0;
+  display: none;
 }
 
 .integration-grid {
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-gap: 4em;
-    grid-row-gap: 0;
-    overflow: hidden;
-    background-color: whitesmoke;
-    clear: both;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 4em;
+  grid-row-gap: 0;
+  overflow: hidden;
+  background-color: whitesmoke;
+  clear: both;
 }
 
 form.integration-form {
-    font-family: 'Roboto', sans-serif;
-    margin: 2em auto;
-    display: table;
+  font-family: 'Roboto', sans-serif;
+  margin: 2em auto;
+  display: table;
 }
 
-form.integration-form > div {
-    display: table-row;
+form.integration-form>div {
+  display: table-row;
 }
 
-label, input {
-    display: table-cell;
-    margin-bottom: 2em;
+label,
+input {
+  display: table-cell;
+  margin-bottom: 2em;
 }
 
 label {
-    padding-right: 1em;
+  padding-right: 1em;
 }
 
 input {
-    font-size: 1em;
-    text-align: center;
-    color: #222;
+  font-size: 1em;
+  text-align: center;
+  color: #222;
 }
 
 input:invalid {
-    border: 2px solid #e69138;
-    background-color: lightyellow;
+  border: 2px solid #e69138;
+  background-color: lightyellow;
 }
 
-.notes, .details, .warning {
-    margin: 1.5em 15%;
-    text-align: center;
+.notes,
+.details,
+.warning {
+  margin: 1.5em 15%;
+  text-align: center;
+}
+
+.details {
+  margin-top: 2em;
 }
 
 .notes {
-    color: grey;
+  color: grey;
 }
 
 .warning {
-    color: #e69138;
-    font-style: italic;
-    margin: 1em 15%;
+  color: #e69138;
+  font-style: italic;
+  margin: 1em 15%;
 }
 
 label .warning {
-    text-align: left;
-    margin: 0;
-    padding: 0;
+  text-align: left;
+  margin: 0;
+  padding: 0;
 }

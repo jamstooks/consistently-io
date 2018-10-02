@@ -1,115 +1,114 @@
 import React from "react";
 import PropTypes from "prop-types";
+import ReactMarkdown from "react-markdown";
+
+import IntegrationForm from "./IntegrationForm";
 
 
 class IntegrationConfig extends React.Component {
 
-  getType = (key) => {
-    // @todo - would be nice to get this from the api
-    let type = "text";
-    if(key.includes("url")) {
-      type = "url";
-    }
-    else if(key === "deployment_delay") {
-      type = "number"
-    }
-    return type;
+  handleSubmit = values => {
+    this.props.updateIntegration(this.props.integration.id, values);
   }
-  
-  keyToLabel = (key) => {
-    var re = new RegExp("_", 'g');
-    let label = key.replace(re, " ");
-    label = label.replace("url", "URL");
-    return label.charAt(0).toUpperCase() + label.slice(1);
+
+  handleFieldChange = event => {
+    let val = (event.target.type === "checkbox") ?
+      event.target.checked :
+      event.target.value;
+    this.props.changeFormValue(event.target.id, val);
   }
 
   render() {
-    
-    let current = this.props.integration.obj;
 
-    if (this.props.isFetching) {
-      return (<p className="loading-block">Loading...</p>);
-    }
+    let obj = this.props.integration.obj;
+    let form = this.props.integration.form;
 
     if (this.props.error !== null && this.props.error !== undefined) {
       return (<p>Error! [{this.props.error}]</p>);
     }
-    
+
     let toggleClass = 'inactive';
-    
-    let fields = [];
-    if(current !== null && current !== null) {
-      
-      toggleClass = 'active';
-      
-      Object.keys(current).forEach((key, index) => {
-        
-        if(key !== "is_active") {
-          fields.push(<div>
-            <label for={key}>
-              {this.keyToLabel(key)}:
-              <p class="warning">Invalid URL.</p>
-            </label>
-            <input
-              value={current[key]}
-              type={this.getType(key)}
-              name={key}
-              id={key} required />
-          </div>);
-        }
-      });
+    let configClass = 'config ';
+    let description = null;
+    let loadingIndicator = null;
+
+    if (this.props.integration.isFetching) {
+      return (<p className="loading-block">Loading...</p>);
     }
-    
+    else {
+
+      if (obj !== null && obj !== null) {
+
+        if (obj.is_active) { toggleClass = 'active'; }
+        if (form.isUpdating) {
+          loadingIndicator = (
+            <div className="loading-block form-loading-indicator"></div>);
+        }
+
+        let fullIntegration = this.props.allIntegrations.find(
+          (i) => i.id === this.props.integration.id);
+
+        description = (
+          <ReactMarkdown source={fullIntegration.description} />);
+        configClass += fullIntegration.integration_type;
+
+        if (form !== null && form !== undefined) {
+          form = (<IntegrationForm
+            values={form.values}
+            errors={form.errors}
+            handleSubmit={this.handleSubmit}
+            handleFieldChange={this.handleFieldChange} />);
+        }
+      }
+    }
+
+    let warning = "";
+    if (form !== null && form.errors !== null && form.errors !== undefined) {
+      warning = (<p className="warning">Please fix the errors below.</p>);
+    }
+
     return (
-      <div class="config">
+      <div className={configClass}>
         <div className="back-button" onClick={() => this.props.unselect()}>
           &lt;&lt;
         </div>
         <div className={"toggle-switch " + toggleClass}></div>
+        {loadingIndicator}
   
-        <p className="details">
-          <strong>HTML Validation</strong> - service provided by
-          <a href="#">W3C.org</a>
-        </p>
-  
-        <p className="warning">URL is required to activate.</p>
-        <form action="" method="get" className="integration-form">
-          {fields}
-        </form>
-        <p className="notes">
-          Currently we only support one URL per repo.
-        </p>
+        <div className="details">
+          {description}
+        </div>
+
+        {warning}        
+        {form}
+        {/*}<p className="notes"></p>{*/}
       </div>
     );
   }
 }
-/*
-        <div>
-          <label for="name">
-                    URL to Validate:
-                    <p class="warning">Invalid URL.</p>
-                  </label>
-          <input type="url" name="name" id="name" required />
-        </div>
-        <div>
-          <label for="delay">Delay (seconds): </label>
-          <input type="number" name="delay" id="delay" />
-        </div>
-*/
+
 
 IntegrationConfig.propTypes = {
   /**
-   * The current integration
+   * The obj integration
    */
   integration: PropTypes.object.isRequired,
   /**
-   * Deselects the current integration
+   * All the integrations (to access additional fields)
+   */
+  allIntegrations: PropTypes.array.isRequired,
+  /**
+   * Deselects the obj integration
    */
   unselect: PropTypes.func.isRequired,
   /**
    * Sends update request for integration
    */
-  update: PropTypes.func.isRequired,
+  updateIntegration: PropTypes.func.isRequired,
+  /**
+   * 
+   */
+  changeFormValue: PropTypes.func.isRequired
 };
 
 export default IntegrationConfig;

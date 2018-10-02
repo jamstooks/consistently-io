@@ -21,14 +21,20 @@ The repo itself is passed in using the `window.repo` variable, for now.
           is_active: <string>,
           markdown: <string>,
           ...
-        },
-        ...]
+        }
+        ...],
+        error: <string>
       },
       current: {
+        id: <int:id>,
         isFetching: <bool>,
-        id: <int>,
-        is_active: <bool>,
-        ...<unique props>
+        error: <string>,
+        obj: <obj>,
+        form: {
+          isUpdating: <bool>,
+          values: <obj>,
+          errors: <obj> or null,
+        }
       }
     }
 

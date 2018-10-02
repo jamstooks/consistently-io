@@ -14,9 +14,8 @@
         </a>
     </div>
     <div class="repo-box-settings">
-      <a href="#"></a>
+      <a href="{% url 'repos:repo-settings' repo.prefix repo.name %}"></a>
     </div>
-    <!--<div class="repo-box-toggle inactive">off</div>-->
   </div>
 
   {% endfor %} {% else %}
