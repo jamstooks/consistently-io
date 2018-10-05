@@ -2,6 +2,35 @@ from django.http import Http404
 from django.urls import reverse
 
 from .base import BaseTestCase
+from consistently.apps.repos import permissions
+from consistently.apps.integrations.types.html.models import HTMLValidation
+
+
+class CommitSaveTestCase(BaseTestCase):
+
+    def setUp(self):
+
+        super(CommitSaveTestCase, self).setUp()
+
+        from consistently.apps.integrations.models import IntegrationStatus
+
+        self.html = HTMLValidation.objects.create(repo=self.repo)
+        self.status = IntegrationStatus.objects.create(
+            commit=self.commit,
+            integration=self.html,
+            status=IntegrationStatus.STATUS_CHOICES.waiting)
+
+    def test_get_counts(self):
+
+        self.assertIsNone(self.commit.waiting_count)
+        self.assertIsNone(self.commit.pass_count)
+        self.assertIsNone(self.commit.fail_count)
+
+        self.commit.get_counts()
+        self.commit.refresh_from_db()
+        self.assertEqual(self.commit.waiting_count, 1)
+        self.assertEqual(self.commit.pass_count, 0)
+        self.assertEqual(self.commit.fail_count, 0)
 
 
 class RepoListTestCase(BaseTestCase):
@@ -79,3 +108,70 @@ class ProfileTestCase(BaseTestCase):
         self.login_client()
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
+
+
+class RepoSettingsTestCase(BaseTestCase):
+
+    def setUp(self):
+        """
+            Set the url
+        """
+        super(RepoSettingsTestCase, self).setUp()
+        self.url = reverse(
+            'repos:repo-settings',
+            args=[self.repo.prefix, self.repo.name])
+        self.private_url = reverse(
+            'repos:repo-settings',
+            args=[self.private_repo.prefix, self.private_repo.name])
+        self.restricted_url = reverse(
+            'repos:repo-settings',
+            args=[self.restricted_repo.prefix, self.restricted_repo.name])
+        self.restricted_repo.is_active = True
+        self.restricted_repo.save()
+
+    def tearDown(self):
+        self.restricted_repo.is_active = False
+        self.restricted_repo.save()
+
+    def test_admin_required(self):
+
+        # confirm a user who isn't authenticated gets redirected to login
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+
+        # login_url = reverse('social:begin', args=['github', ])
+        # self.assertIn(login_url, response.url)
+
+        # assert that a user can access their repos
+        self.login_client()
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+        # but can't access the restricted repo
+        response = self.client.get(self.restricted_url)
+        self.assertEqual(response.status_code, 403)
+
+        # and can't access the private repo
+        response = self.client.get(self.private_url)
+        self.assertEqual(response.status_code, 404)
+
+
+class PermissionsTestCase(BaseTestCase):
+
+    def test_user_is_repo_admin(self):
+
+        # The base user has access to the base repo
+        self.assertTrue(permissions.user_is_repo_admin(
+            self.user, self.repo))
+
+        # The base user does not have access to the restricted repo
+        self.assertFalse(permissions.user_is_repo_admin(
+            self.user, self.restricted_repo))
+
+    def test_repo_is_public(self):
+
+        # public repo
+        self.assertTrue(permissions.repo_is_public(self.repo))
+
+        # private repo
+        self.assertFalse(permissions.repo_is_public(self.private_repo))

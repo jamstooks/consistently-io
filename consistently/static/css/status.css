@@ -1,0 +1,68 @@
+.status-box {
+  display: flex;
+  justify-content: space-between;
+  margin: 2em 0;
+  height: 3.6em;
+}
+
+.status-box>div {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.status-box-logo {
+    flex-grow: 1;
+    min-width: 3em;
+    max-width: 3em;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: center center;
+    border-right: 2em solid white;
+}
+
+.status-box-icon {
+  flex-grow: 1;
+  min-width: 7em;
+  max-width: 7em;
+  background-repeat: no-repeat;
+  background-size: 3em;
+  background-position: center center;
+}
+
+.status-box.waiting .status-box-icon {
+  background-color: grey;
+  background-image: url("../img/waiting_icon.svg");
+}
+
+.status-box.failed .status-box-icon {
+  background-color: #e69138;
+  background-image: url("../img/x_icon.svg");
+}
+
+.status-box.passed .status-box-icon {
+  background-color: #93c47d;
+  background-image: url("../img/check_icon.svg");
+}
+
+.status-box-detail {
+  flex-grow: 20;
+  text-align: left;
+  padding: .2em .5em;
+  font-size: 1.3em;
+  color: white;
+  background-color: silver;
+  line-height: 1;
+}
+
+.status-box.waiting .status-box-detail {
+  background-color: silver;
+}
+
+.status-box.failed .status-box-detail {
+  background-color: #f6b26b;
+}
+
+.status-box.passed .status-box-detail {
+  background-color: #b6d7a8;
+}

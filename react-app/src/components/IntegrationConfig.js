@@ -50,7 +50,8 @@ class IntegrationConfig extends React.Component {
 
         description = (
           <ReactMarkdown source={fullIntegration.description} />);
-        configClass += fullIntegration.integration_type;
+        configClass += 
+          fullIntegration.integration_type + "-integration-background";
 
         if (form !== null && form !== undefined) {
           form = (<IntegrationForm

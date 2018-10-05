@@ -24,15 +24,21 @@ class HTMLValidation(Integration):
         return "**HTML Validation** - service provided by [W3.org](https://validator.w3.org/)"
 
     @property
-    def link(self):
-        return "https://validator.w3.org/"
+    def notes(self):
+        return "Currently we only support one URL per repo."
 
     def get_serializer_class(self):
         from .serializer import HTMLValidationSerializer
         return HTMLValidationSerializer
 
-    def run(self, status):
+    def run(self, integration_status):
         """
         Receives the IntegrationStatus when triggered by the worker
         """
-        get_validation_status(status)
+        return get_validation_status(integration_status)
+
+    def get_task_kwargs(self):
+        """
+        These are the kwargs supplied to the celery task
+        """
+        return {'countdown': 0}  # self.deployment_delay}

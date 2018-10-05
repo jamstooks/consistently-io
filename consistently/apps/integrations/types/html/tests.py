@@ -3,18 +3,18 @@ from .models import HTMLValidation
 from .serializer import HTMLValidationSerializer
 from ...models import IntegrationStatus
 
+from unittest import mock
+
 
 class HTMLTestCase(BaseTestCase):
 
-    def test_create(self):
-        html = HTMLValidation(
+    def test_integration_type_assignment(self):
+        html = HTMLValidation.objects.create(
             repo=self.repo,
             is_active=False,
             url_to_validate="http://www.example.com",
             deployment_delay="1"
         )
-        html.save()
-
         self.assertEqual(html.integration_type, 'html')
 
 
@@ -60,36 +60,65 @@ class SerializerTestCase(BaseTestCase):
         self.assertTrue(serializer.is_valid())
 
 
+# Mock request.get for the worker tests
+def fake_get(*args, **kwargs):
+
+    class MockRequest:
+        def __init__(self, status_code=200, json_data={}):
+            self.status_code = status_code
+            self.json_data = json_data
+
+        def json(self):
+            return self.json_data
+
+    if 'invalid.url' in args[0]:
+        return MockRequest(
+            status_code=200, json_data={'messages': [{'type': 'error'}]})
+    elif 'broken.url' in args[0]:
+        return MockRequest(status_code=500)
+    else:
+        return MockRequest(status_code=200, json_data={'messages': []})
+
+
+@mock.patch('requests.get', fake_get)
 class WorkerTestCase(BaseTestCase):
 
     def setUp(self):
         super(WorkerTestCase, self).setUp()
-
-    def test_run(self):
-        html = HTMLValidation(
+        self.html = HTMLValidation.objects.create(
             repo=self.repo,
             is_active=False,
-            url_to_validate="http://www.example.com",
+            url_to_validate="https://valid.url/",
             deployment_delay="1"
         )
-        html.save()
 
-        status = IntegrationStatus(integration=html, commit=self.commit)
-        status.save()
-        self.assertEqual(
-            status.status, IntegrationStatus.STATUS_CHOICES.waiting)
+    def test_run(self):
 
-        html.run(status)
+        status = IntegrationStatus.objects.create(
+            integration=self.html,
+            commit=self.commit,
+            with_settings='[{"fields": {"url_to_validate": "https://invalid.url"}}]')
+
+        # test with an invalid url
+        self.html.run(status)
         status.refresh_from_db()
         self.assertEqual(
             status.status, IntegrationStatus.STATUS_CHOICES.failed)
         self.assertEqual(status.value, "Failed")
         self.assertRegex(status.details, "\d+ Errors, \d+ Warnings")
 
-        html.url_to_validate = "https://validator.w3.org/"
-        html.save()
-
-        html.run(status)
+        # test with a valid url
+        status.with_settings = '[{"fields": {"url_to_validate": "https://valid.url"}}]'
+        status.save()
+        self.html.run(status)
         status.refresh_from_db()
         self.assertEqual(
             status.status, IntegrationStatus.STATUS_CHOICES.passed)
+
+        # test with a connection error
+        status.with_settings = '[{"fields": {"url_to_validate": "https://broken.url"}}]'
+        status.save()
+        self.html.run(status)
+        status.refresh_from_db()
+        self.assertEqual(
+            status.status, IntegrationStatus.STATUS_CHOICES.failed)

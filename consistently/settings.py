@@ -37,11 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.humanize',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
     # 'django_extensions',
+    'django_celery_results',
     'rest_framework',
     'social_django',
 
@@ -139,15 +141,18 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # social-auth config
 # ==============================================================================
 
-
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.github.GithubOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
+# @todo - eventually request less scope initially (https://bit.ly/2DZzEeZ)
+
 SOCIAL_AUTH_GITHUB_KEY = os.environ.get('GITHUB_KEY', None)
 SOCIAL_AUTH_GITHUB_SECRET = os.environ.get('GITHUB_SECRET', None)
-SOCIAL_AUTH_GITHUB_SCOPE = ['read:org', ]
+SOCIAL_AUTH_GITHUB_SCOPE = [
+    'read:org',
+    'admin:repo_hook', ]
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = reverse_lazy('repos:profile')
 
 # github will need to be updated for dev environment
@@ -167,10 +172,12 @@ REST_FRAMEWORK = {
 # Local dev with React
 # ==============================================================================
 
+REACT_APP_NAME = 'react-app'
+
 if DEBUG:
     MIDDLEWARE.append('consistently.dev_middleware.dev_cors_middleware')
 
-REACT_BASE_DIR = os.path.join(BASE_DIR, 'profile-app')
+REACT_BASE_DIR = os.path.join(BASE_DIR, REACT_APP_NAME)
 REACT_BUILD_DIR = os.path.join(REACT_BASE_DIR, 'build')
 
 STATICFILES_DIRS = [
@@ -186,3 +193,24 @@ with open(path) as f:
 # REACT_CSS_PATH = data['main.css'].replace('static/', '')
 REACT_CSS_PATH = None
 REACT_JS_PATH = data['main.js'].replace('static/', '')
+
+# ==============================================================================
+# Github Webhook
+# ==============================================================================
+
+PUBLIC_URL = os.environ.get('PUBLIC_URL', 'http://consistently.io/')
+WEBHOOK_URL = reverse_lazy('api:github-webhook')
+
+# ==============================================================================
+# Celery
+# ==============================================================================
+
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
+# CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/myvhost'
+CELERY_TASK_ALWAYS_EAGER = os.environ.get('CELERY_ALWAYS_EAGER', False)
+
+# @todo - consider 'django-cache' down the road
+CELERY_RESULT_BACKEND = 'django-db'
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'

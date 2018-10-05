@@ -1,10 +1,12 @@
-{% extends "repos/base.html" %} {% load static %} {% block content %}
+{% extends "repos/base.html" %}
 
-<a href="{% url 'repos:repo-detail' repo.prefix repo.name %}" class="back-button">&lt;&lt;</a>
+{% load static %}
 
-<h1>
-  <a href="{% url 'repos:prefix-repo-list' repo.prefix%}">
-    {{ repo.prefix }}</a>/{{ repo.name }}</h1>
+{% block content %}
+
+<!--<a href="{% url 'repos:repo-detail' repo.prefix repo.name %}" class="back-button">&lt;&lt;</a>-->
+
+  {{ block.super }}
 
 <div class="center-column">
 

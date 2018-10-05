@@ -10,12 +10,12 @@ from consistently.apps.integrations.types.html.models import HTMLValidation
 
 
 TEST_USERNAME = os.environ.get('TEST_GITHUB_USERNAME', 'jamstooks')
-TEST_GITHUB_TOKEN = os.environ.get('TEST_GITHUB_TOKEN')
+TEST_GITHUB_TOKEN = os.environ.get('GITHUB_APP_TOKEN')
 
 # public repo the user has access too
-TEST_REPO_ID = os.environ.get('TEST_REPO_ID', 4876788)
+TEST_REPO_ID = os.environ.get('TEST_REPO_ID', 151312463)
 TEST_REPO_PREFIX = os.environ.get('TEST_REPO_PREFIX', TEST_USERNAME)
-TEST_REPO_NAME = os.environ.get('TEST_REPO_NAME', 'django-s3-folder-storage')
+TEST_REPO_NAME = os.environ.get('TEST_REPO_NAME', 'test-webhooks')
 
 # private repo the user has access too
 PRIVATE_REPO_ID = os.environ.get('TEST_REPO_ID', 95119441)

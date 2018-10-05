@@ -54,7 +54,7 @@ class Integration(TimeStampedModel):
         raise NotImplementedError
 
     @property
-    def link(self):
+    def notes(self):
         raise NotImplementedError
 
     def get_serializer_class(self):
@@ -63,6 +63,18 @@ class Integration(TimeStampedModel):
 
     def run(self, commit):
         raise NotImplementedError
+
+    def get_task_delay(self):
+        """
+        How long to wait before starting task initially
+        """
+        return 60
+
+    def get_task_kwargs(self):
+        """
+        These are the kwargs supplied to the celery task
+        """
+        return {}
 
     @property
     def type_instance(self):
@@ -79,15 +91,16 @@ class IntegrationStatus(TimeStampedModel):
     """
 
     STATUS_CHOICES = Choices(
-        ('waiting', 'Waiting'),
+        ('waiting', 'Waiting...'),
         ('passed', 'Passed'),
         ('failed', 'Failed')
     )
 
     integration = models.ForeignKey(
         Integration, on_delete=models.CASCADE)
-    commit = models.ForeignKey(Commit, on_delete=models.CASCADE)
-    celery_task_id = models.CharField(
+    commit = models.ForeignKey(
+        Commit, on_delete=models.CASCADE)
+    task_id = models.CharField(
         max_length=50, unique=True, blank=True, null=True)
     status = models.CharField(
         max_length=20,
@@ -100,7 +113,10 @@ class IntegrationStatus(TimeStampedModel):
     details = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return "%s (%s)" % (self._meta.verbose_name.title(), self.commit)
+        return "%s (%s)[%s]" % (
+            self._meta.verbose_name.title(),
+            self.commit,
+            self.status)
 
 
 """

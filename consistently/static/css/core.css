@@ -27,11 +27,39 @@ strong {
 h1 {
   font-weight: normal;
   color: #444;
+  margin-bottom: 1rem;
+  padding-bottom: 0;
+}
+
+.h1-icon-link {
+  vertical-align: super;
+  font-size: .7em;
+  color: silver;
+}
+
+h1 a.h1-icon-link {
+  color: silver;
+}
+
+.subheading {
+  font-size: .7em;
+  font-family: 'Roboto', sans-serif;
+  color: #666;
+  margin: -1rem 0 2em 2em;
+  padding: 0;
+}
+
+.subheading a {
+  text-decoration: underline;
 }
 
 .center-column {
   width: 600px;
   margin: auto;
+}
+
+.center-column.narrow {
+  width: 400px;
 }
 
 a,
@@ -40,8 +68,9 @@ a:visited {
   text-decoration: none;
 }
 
-a:hover {
-  color: #e69138;
+a:hover, a.h1-icon-link:hover {
+  /*color: #e69138;*/
+  color: #6fa8dc;
   /*text-decoration: none;*/
 }
 

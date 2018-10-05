@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404
+from django.conf import settings
+from django.core import serializers
 from django.urls import reverse
 from django.db.utils import IntegrityError
-from json import loads
 
 from rest_framework import generics
 from rest_framework import mixins
@@ -12,13 +13,18 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from github import Github
+from json import loads
 
 from consistently.apps.repos.models import Repository, Commit
-from consistently.apps.integrations.models import Integration, INTEGRATION_TYPES
-from consistently.apps.integrations.types.html.models import HTMLValidation
+from consistently.apps.integrations.models import (
+    Integration, IntegrationStatus, INTEGRATION_TYPES)
+from consistently.apps.integrations.tasks import run_integration
+
 from .serializers import (
     RepositoryUpdateSerializer, IntegrationListSerializer)
 from .permissions import HasRepoAccess
+
+import os
 
 # @todo - throttling
 
@@ -92,22 +98,41 @@ class ToggleRepositoryViewSet(generics.UpdateAPIView):
         """
         response = super(ToggleRepositoryViewSet, self).update(
             request, args, kwargs)
-        obj = self.get_object()
+
+        repo = self.get_object()
+        hook_id = repo.hook_id
 
         # Set up github connection and get the repo reference
-        # github = self.request.user.social_auth.get(provider='github')
-        # token = github.extra_data['access_token']
-        # g = Github(token)
-        # repo = g.get_repo(obj.github_id)
-        # import pdb
-        # pdb.set_trace()
-        # hooks = [h for h in repo.get_hooks()]
-        # import pdb
+        github = self.request.user.social_auth.get(provider='github')
+        token = github.extra_data['access_token']
+        g = Github(token)
+        github_repo = g.get_repo(repo.github_id)
 
-        # is_active = self.get_object().is_active
         # If the status is active create (or confirm) the webhook
+        if repo.is_active and not repo.hook_id:
+            hook_config = {
+                'url': "%s%s" % (
+                    settings.PUBLIC_URL, settings.WEBHOOK_URL),
+                'content_type': "json"
+            }
+
+            hook = github_repo.create_hook(
+                name="web",
+                config={
+                    'url': "%s%s" % (
+                        settings.PUBLIC_URL, settings.WEBHOOK_URL),
+                    'content_type': "json"
+                })
+            repo.hook_id = hook.id
+            repo.save()
 
         # if the status is inactive remove the webhook
+        elif not repo.is_active and repo.hook_id:
+            hook = github_repo.get_hook(repo.hook_id)
+            hook.delete()
+            repo.hook_id = None
+            repo.save()
+
         return response
 
 
@@ -174,6 +199,8 @@ class IntegrationDetailView(
 class GithubWebhookView(APIView):
     """
     handles webooks connectons from github
+
+    @todo - this definitely could be more robust.
     """
 
     def post(self, request, format=None):
@@ -181,6 +208,15 @@ class GithubWebhookView(APIView):
         try:
             obj = loads(request.body)
             github_id = obj['repository']['id']
+
+            # Initial hook creation
+            if "hook_id" in obj.keys():
+                return Response(data={
+                    'status': "ACCEPTED",
+                    'message': "Thanks for connecting with Consistently.io!"
+                }, status=200)
+
+            # See if the repo exists locally
             try:
                 repo = Repository.objects.get(github_id=github_id)
             except:
@@ -189,11 +225,21 @@ class GithubWebhookView(APIView):
                     'message': "Repository does not exist on Consistently.io"
                 }, status=400)
 
+            # Only process active repos
             if not repo.is_active:
                 return Response(data={
                     'status': "REJECTED",
                     'repo': repo.name,
                     'message': "Repository not active on Consistently.io"
+                }, status=400)
+
+            # Only process public repos
+            # @todo - consider deactivating repo
+            if obj['repository']['private']:
+                return Response(data={
+                    'status': "REJECTED",
+                    'repo': repo.name,
+                    'message': "Repository not public"
                 }, status=400)
 
             # accept only pushes to master
@@ -214,6 +260,10 @@ class GithubWebhookView(APIView):
                     message=obj['head_commit']['message'],
                     github_timestamp=obj['head_commit']['timestamp']
                 )
+                # @todo - there may be a race condition here
+                # we might need to do a timestamp compare
+                repo.latest_commit = commit
+                repo.save()
             except IntegrityError:
                 return Response(data={
                     'status': "REJECTED",
@@ -223,19 +273,51 @@ class GithubWebhookView(APIView):
                 }, status=400)
 
             # queue up worker to... (process commit)
+
             #  identify all active integrations for this repository
-            #  create initial IntegrationStatus objects
-            #  queue up worker for each IntegrationStatus
+            active_integrations = []
+            for Klass in INTEGRATION_TYPES.values():
+                try:
+                    i = Klass.objects.get(repo=repo)
+                    if i.is_active:
+                        active_integrations.append(i)
+                except Klass.DoesNotExist:
+                    # there may be a few instances where new integrations
+                    # haven't been created for the repo yet.
+                    pass
+
+            # create `IntegrationStatus` objects for each integration
+            for i in active_integrations:
+
+                data = serializers.serialize('json', [i, ])
+                status = IntegrationStatus.objects.create(
+                    integration=i, commit=commit, with_settings=data)
+
+                #  queue up worker for each IntegrationStatus
+                print("triggering task")
+                task = run_integration.apply_async(
+                    args=(status.id,),
+                    kwargs=i.get_task_kwargs(),
+                    delay=i.get_task_delay())
+
+                # store the task id on the status object
+                # but only update the task_id in case the
+                # task has already modified the status
+                status.task_id = task.id
+                status.save(update_fields=["task_id"])
 
             # log the latest commit
             return Response(data={
                 'status': "ACCEPTED",
                 'repo': repo.name,
-                'commit': commit.sha
+                'commit': commit.sha,
+                'integrations': [i.integration_type for i in active_integrations]
             }, status=200)
 
-        except:
+        except Exception as e:
+            message = (e.__class__.__name__, str(e))
+            print(message)
             return Response(data={
                 'status': "ERROR",
-                'message': "Unknown Error"
+                'message': "%s: %s" % message
             }, status=500)

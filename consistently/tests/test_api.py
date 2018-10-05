@@ -1,10 +1,13 @@
-from json import loads
 from django.urls import reverse
+from django.test import override_settings
+from json import loads
 from rest_framework.test import APIClient
+from unittest import mock
 
 from .base import BaseTestCase
 from consistently.apps.repos.models import Repository, Commit
-from consistently.apps.integrations.models import Integration, INTEGRATION_TYPES
+from consistently.apps.integrations.models import (
+    Integration, IntegrationStatus, INTEGRATION_TYPES)
 from consistently.apps.integrations.types.html.models import HTMLValidation
 
 
@@ -119,13 +122,15 @@ class ToggleRepoTestCase(BaseAPITestCase):
         data = loads(response.content)
         self.repo.refresh_from_db()
         self.assertTrue(self.repo.is_active)
+        self.assertIsNotNone(self.repo.hook_id)
 
-        # test with PUT
+        # test with PUT (and deactivate one more time)
         response = self.client.put(
             self.url, {'is_active': False}, format='json')
         data = loads(response.content)
         self.repo.refresh_from_db()
         self.assertFalse(self.repo.is_active)
+        self.assertIsNone(self.repo.hook_id)
 
 
 class IntegrationListTestCase(BaseAPITestCase):
@@ -260,6 +265,7 @@ class IntegrationDetailTestCase(BaseAPITestCase):
         self.assertTrue(self.html.is_active)
 
 
+@override_settings(CELERY_TASK_ALWAYS_EAGER=True)
 class GithubWebhookTestCase(BaseAPITestCase):
     """
     Test handling of the github webhook
@@ -272,7 +278,16 @@ class GithubWebhookTestCase(BaseAPITestCase):
         super(GithubWebhookTestCase, self).setUp()
         self.initial_commit_count = Commit.objects.count()
 
-    def test_list(self):
+        # add an active HTMLIntegration for the current repo
+        HTMLValidation.objects.create(
+            repo=self.repo,
+            url_to_validate="http://www.aashe.org",
+            deployment_delay=1,
+            is_active=True)
+
+    @mock.patch(
+        'consistently.apps.integrations.types.html.models.HTMLValidation.run')
+    def test_list(self, fake_run):
 
         url = reverse('api:github-webhook')
 
@@ -284,13 +299,29 @@ class GithubWebhookTestCase(BaseAPITestCase):
                 "timestamp": "2018-10-02T16:01:56-04:00"
             },
             "repository": {
-                "id": self.repo.github_id
+                "id": self.repo.github_id,
+                "private": False
             }
         }
 
+        self.assertEqual(0, IntegrationStatus.objects.count())
         response = self.client.post(
             url, good_payload, format='json')
         data = loads(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['status'], "ACCEPTED")
+
+        # a new commit should be created
         self.assertEqual(Commit.objects.count(), self.initial_commit_count + 1)
+
+        # a new `IntegrationStatus` object should be created
+        # and the mocked task (`HTMLValidation`) should have executed
+        self.assertEqual(1, IntegrationStatus.objects.count())
+        status = IntegrationStatus.objects.all()[0]
+        with_settings = loads(status.with_settings)
+        self.assertEqual(
+            with_settings[0]['fields']['url_to_validate'],
+            "http://www.aashe.org")
+
+        # confirm the run method was executed
+        self.assertEqual(fake_run.call_count, 1)

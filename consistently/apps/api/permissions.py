@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission
-from github import Github
+from consistently.apps.repos import permissions
 
 
 class HasRepoAccess(BasePermission):
@@ -12,23 +12,12 @@ class HasRepoAccess(BasePermission):
 
     def has_object_permission(self, request, view, obj):
 
-        github = request.user.social_auth.get(provider='github')
-        token = github.extra_data['access_token']
-        g = Github(token)
-
         if obj.__class__.__name__ == 'Repository':
-            repo = g.get_repo(obj.github_id)
+            repo = obj
         else:
             # then it is an integration
-            repo = g.get_repo(obj.repo.github_id)
+            repo = obj.repo
 
-        # if the repo is private return False
-        # only public repos for the beta
-        if repo.private:
-            return False
-
-        # if the user doesn't have access to the repo return false
-        if not repo.permissions.admin:  # and not repo.permissions.push:
-            return False
-
-        return True
+        return (
+            permissions.repo_is_public(repo) and
+            permissions.user_is_repo_admin(request.user, repo))

@@ -17,12 +17,16 @@ class IntegrationGrid extends React.Component {
     let integrations = [];
     let classes = null;
     this.props.integrationList.forEach((i) => {
-      classes = "integration-logo " + i.integration_type;
+      classes = "integration-logo "
+      classes += i.integration_type + "-integration-background";;
       if (i.is_active) {
         classes += " active";
       }
       integrations.push(
-        (<div key={i.id} className={classes} onClick={() => this.props.select(i.id)}>
+        (<div
+          key={i.id}
+          className={classes}
+          onClick={() => this.props.select(i.id)}>
           <span class="screen-reader">{classes}</span>
         </div>)
       );

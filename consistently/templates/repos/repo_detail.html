@@ -1,9 +1,22 @@
-{% extends "repos/base.html" %} {% block content %}
-<h1>
-    <a href="{% url 'repos:prefix-repo-list' repo.prefix%}">
-        {{ repo.prefix }}</a>/{{ repo.name }}</h1>
+{% extends "repos/base.html" %}
 
-<div class="center-column">
+{% block content %}
 
-</div>
+  {{ block.super }}
+
+  <div class="center-column narrow">
+      {% for status in status_list %}
+          <div class="status-box {{ status.status }}">
+              <div class="status-box-logo {{ status.integration.integration_type }}-integration-background"></div>
+              <div class="status-box-icon"></div>
+              <div class="status-box-detail {{ status.status }}">
+                  {% if status.value %}
+                    {{ status.value|title }}
+                  {% else %}
+                    {{ status.get_status_display }}
+                  {% endif %}
+              </div>
+          </div>
+      {% endfor %}
+  </div>
 {% endblock %}

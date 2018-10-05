@@ -4,6 +4,7 @@ from django.contrib.auth.views import LogoutView
 from django.contrib.auth import logout as auth_logout
 from django.shortcuts import redirect
 from django.urls import include, path
+from django.views.generic import TemplateView
 
 
 """ @todo
@@ -33,5 +34,7 @@ urlpatterns = [
         r'^api-auth/',
         include('rest_framework.urls', namespace='rest_framework')),
     url('', include('social_django.urls')),  # why can't this have a prefix??
+
+    url('', TemplateView.as_view(template_name="home.html"))
 
 ]

@@ -1,3 +1,35 @@
 {% extends "base.html" %}
 
-{% block content %}{% endblock %}
+{% load humanize %}
+
+{% block content %}
+  <h1>
+    <a href="{% url 'repos:prefix-repo-list' prefix %}">
+      {{ prefix }}</a>
+    {% if repo %}
+      / 
+      <a href="{% url 'repos:repo-detail' repo.prefix repo.name %}">
+        {{ repo.name }}
+      </a>
+      {% if is_repo_admin %}
+      <a
+        href="{% url 'repos:repo-settings' repo.prefix repo.name %}"
+        class="h1-icon-link">
+        <span class="octicon octicon-gear"></span>
+      </a>
+      {% endif %}
+    {% endif %}
+  </h1>
+  {% if repo %}
+  <p class="subheading">
+    {% if repo.latest_commit %}
+      last commit 
+      {{ repo.latest_commit.github_timestamp|naturaltime }}
+      [ <a href="{{ repo.latest_commit.github_url }}">
+          {{ repo.latest_commit }}</a> ]
+    {% else %}
+      <a href="{{ repo.github_url }}">{{ repo.github_url }}</a>
+    {% endif %}
+  </p>
+  {% endif %}
+{% endblock %}

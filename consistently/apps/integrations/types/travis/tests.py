@@ -1,95 +1,105 @@
-# from consistently.tests.base import BaseTestCase
-# from .models import HTMLValidation
-# from .serializer import HTMLValidationSerializer
-# from ...models import IntegrationStatus
+from consistently.tests.base import BaseTestCase
+from .models import Travis
+from .utils import (
+    get_travis_state, CANCELED, CREATED, ERRORED, FAILED, PASSED,
+    QUEUED, READY, STARTED)
+from ...models import IntegrationStatus
+from ...tasks import NeedsToRetry
 
 
-# class HTMLTestCase(BaseTestCase):
-
-#     def test_create(self):
-#         html = HTMLValidation(
-#             repo=self.repo,
-#             is_active=False,
-#             url_to_validate="http://www.example.com",
-#             deployment_delay="1"
-#         )
-#         html.save()
-
-#         self.assertEqual(html.integration_type, 'html')
+from unittest import mock
 
 
-# class SerializerTestCase(BaseTestCase):
+class TravisTestCase(BaseTestCase):
 
-#     def test_object_serialization(self):
-
-#         serializer = HTMLValidationSerializer(instance=self.repo)
-#         self.assertCountEqual(
-#             serializer.data.keys(),
-#             ['is_active', 'url_to_validate',  'deployment_delay'])
-
-#     def test_validation(self):
-
-#         serializer_data = {
-#             'is_active': False,
-#             'deployment_delay': 1
-#         }
-
-#         # data is generally valid when `is_active` is False
-#         serializer = HTMLValidationSerializer(data=serializer_data)
-#         self.assertTrue(serializer.is_valid())
-
-#         # when `is_active` is True then `url_to_validate` is required
-#         serializer_data['is_active'] = True
-#         serializer = HTMLValidationSerializer(data=serializer_data)
-#         self.assertFalse(serializer.is_valid())
-#         self.assertEqual(
-#             str(serializer.errors['url_to_validate'][0]),
-#             'This field is required when active.')
-
-#         # 'url_to_validate' must be a valid URL
-#         serializer_data['url_to_validate'] = "abc"
-#         serializer = HTMLValidationSerializer(data=serializer_data)
-#         self.assertFalse(serializer.is_valid())
-#         self.assertEqual(
-#             str(serializer.errors['url_to_validate'][0]),
-#             'Enter a valid URL.')
-
-#         # Valid url should validate when `is_active` is True
-#         serializer_data['url_to_validate'] = "http://www.google.com"
-#         serializer = HTMLValidationSerializer(data=serializer_data)
-#         self.assertTrue(serializer.is_valid())
+    def test_create(self):
+        travis = Travis.objects.create(repo=self.repo, is_active=False)
+        self.assertEqual(travis.integration_type, 'travis')
 
 
-# class WorkerTestCase(BaseTestCase):
+class MockRequest:
+    def __init__(self, status_code=200, json_data={}):
+        self.status_code = status_code
+        self.json_data = json_data
 
-#     def setUp(self):
-#         super(WorkerTestCase, self).setUp()
+    def json(self):
+        return self.json_data
 
-#     def test_run(self):
-#         html = HTMLValidation(
-#             repo=self.repo,
-#             is_active=False,
-#             url_to_validate="http://www.example.com",
-#             deployment_delay="1"
-#         )
-#         html.save()
 
-#         status = IntegrationStatus(integration=html, commit=self.commit)
-#         status.save()
-#         self.assertEqual(
-#             status.status, IntegrationStatus.STATUS_CHOICES.waiting)
+class WorkerTestCase(BaseTestCase):
 
-#         html.run(status)
-#         status.refresh_from_db()
-#         self.assertEqual(
-#             status.status, IntegrationStatus.STATUS_CHOICES.failed)
-#         self.assertEqual(status.value, "Failed")
-#         self.assertRegex(status.details, "\d+ Errors, \d+ Warnings")
+    def setUp(self):
+        super(WorkerTestCase, self).setUp()
+        self.travis = Travis.objects.create(
+            repo=self.repo,
+            is_active=False,
+            build_time="1"
+        )
+        self.status = IntegrationStatus.objects.create(
+            integration=self.travis,
+            commit=self.commit,
+            with_settings='[{}]')
 
-#         html.url_to_validate = "https://validator.w3.org/"
-#         html.save()
+    def test_get_travis_state(self):
 
-#         html.run(status)
-#         status.refresh_from_db()
-#         self.assertEqual(
-#             status.status, IntegrationStatus.STATUS_CHOICES.passed)
+        # network error should return None
+        with mock.patch(
+                'requests.get', return_value=MockRequest(status_code=500)):
+            state = get_travis_state(self.commit)
+            self.assertIsNone(state)
+
+        base_response = {
+            '@pagination': {
+                'count': 10
+            },
+            'builds': [{
+                'commit': {
+                    'sha': self.commit.sha
+                }
+            }]
+        }
+
+        for state in [
+                CANCELED, CREATED, ERRORED, FAILED, PASSED, QUEUED, READY, STARTED]:
+
+            base_response['builds'][0]['state'] = state
+            with mock.patch(
+                    'requests.get',
+                    return_value=MockRequest(
+                        status_code=200, json_data=base_response)):
+
+                s = get_travis_state(self.commit)
+                self.assertEqual(s, state)
+
+    def test_run(self):
+
+        target = 'consistently.apps.integrations.types.travis.utils.get_travis_state'
+
+        # any of these states should raise NeedsToRetry
+        retry_states = [CREATED, QUEUED, READY, STARTED, None]
+        for state in retry_states:
+            with mock.patch(target, return_value=state):
+                with self.assertRaises(NeedsToRetry):
+                    self.travis.run(self.status)
+                self.status.refresh_from_db()
+                self.assertEqual(self.status.value, state)
+                self.assertEqual(self.status.status,
+                                 IntegrationStatus.STATUS_CHOICES.waiting)
+
+        # any of these states should result in failure
+        failure_states = [CANCELED, ERRORED, FAILED]
+        for state in failure_states:
+            with mock.patch(target, return_value=state):
+                self.travis.run(self.status)
+                self.status.refresh_from_db()
+                self.assertEqual(self.status.value, state)
+                self.assertEqual(self.status.status,
+                                 IntegrationStatus.STATUS_CHOICES.failed)
+
+        # success
+        with mock.patch(target, return_value=PASSED):
+            self.travis.run(self.status)
+            self.status.refresh_from_db()
+            self.assertEqual(self.status.value, PASSED)
+            self.assertEqual(self.status.status,
+                             IntegrationStatus.STATUS_CHOICES.passed)
