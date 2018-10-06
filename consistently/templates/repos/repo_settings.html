@@ -2,6 +2,11 @@
 
 {% load static %}
 
+{% block title %}
+  Config
+  {{ block.super }}
+{% endblock %}
+
 {% block content %}
 
 <!--<a href="{% url 'repos:repo-detail' repo.prefix repo.name %}" class="back-button">&lt;&lt;</a>-->
