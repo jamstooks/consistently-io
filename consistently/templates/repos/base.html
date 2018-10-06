@@ -2,6 +2,14 @@
 
 {% load humanize %}
 
+{% block title %}
+  {{ prefix }}
+  {% if repo %}
+    / {{ repo }}
+  {% endif %} |
+  {{ block.super }}
+{% endblock %}
+
 {% block content %}
   <h1>
     <a href="{% url 'repos:prefix-repo-list' prefix %}">

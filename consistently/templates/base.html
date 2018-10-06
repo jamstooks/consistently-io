@@ -10,7 +10,9 @@
   <meta name="author" content="">
   <link rel="icon" href="{% static 'img/favicon.ico' %}">
 
-  <title>consistently.io - development goals</title>
+  <title>
+    {% block title %}consistently.io - development goals{% endblock %}
+  </title>
   
   {% block css %}
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fjalla+One|Roboto">
