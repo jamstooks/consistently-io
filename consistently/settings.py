@@ -14,6 +14,8 @@ import os
 import json
 import consistently as project_module
 from django.urls import reverse_lazy
+import django_heroku
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -89,12 +91,12 @@ WSGI_APPLICATION = 'consistently.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+# django_heroku doesn't quite handle this right
+# https://github.com/heroku/django-heroku/issues/10
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': dj_database_url.parse(
+        os.environ.get('DATABASE_URL', "sqlite:///db.sqlite3")),
 }
 
 
@@ -214,3 +216,5 @@ CELERY_RESULT_BACKEND = 'django-db'
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+
+django_heroku.settings(locals(), databases=not DEBUG)
