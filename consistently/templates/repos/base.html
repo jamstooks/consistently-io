@@ -5,7 +5,7 @@
 {% block title %}
   {{ prefix }}
   {% if repo %}
-    / {{ repo }}
+    / {{ repo.name }}
   {% endif %} |
   {{ block.super }}
 {% endblock %}
