@@ -2,16 +2,17 @@
 
 <div class="nav">
   <div onclick="toggleMenu('left-menu');">
-    <img src="{% static 'img/menu_icon.svg' %}" class="nav-img">
+    <img src="{% static 'img/menu_icon.svg' %}" class="nav-img" alt="menu">
   </div>
   <div class="center">
     <a href="/">
-      <img src="{% static 'img/logo.svg' %}" class="logo">
+      <img src="{% static 'img/logo.svg' %}" class="logo" alt="consistently.io">
     </a>
   </div>
   <div onclick="toggleMenu('right-menu');" class="nav-right">
     <span>
-      <span class="octicon octicon-mark-github"></span> {% if user.is_authenticated %} {{ user.username }} {% endif %}
+      <span class="octicon octicon-mark-github"></span>
+      {% if user.is_authenticated %} {{ user.username }} {% endif %}
     </span>
   </div>
 </div>
