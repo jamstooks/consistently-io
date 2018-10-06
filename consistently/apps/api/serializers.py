@@ -23,7 +23,8 @@ class IntegrationListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Integration
         # fields = '__all__'
-        fields = ('id', 'integration_type', 'is_active', 'description')
+        fields = ('id', 'integration_type',
+                  'is_active', 'description', 'notes')
 
 
 class BasicIntegrationSerializer(serializers.ModelSerializer):

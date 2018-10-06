@@ -19,7 +19,11 @@
 }
 
 .travis-integration-background {
-    background-image: url('../img/integrations/tessa-pride-4.png');
+    background-image: url('../img/integrations/tessa-pride.svg');
+}
+
+.coveralls-integration-background {
+    background-image: url('../img/integrations/coveralls_icon.svg');
 }
 
 .integration-logo.active:after {

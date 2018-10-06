@@ -1,0 +1,61 @@
+.home-grid {
+  margin: 3em;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 2em;
+  grid-row-gap: 0;
+  color: #666;
+  text-align: center;
+}
+
+.home-grid .status-box {
+  margin: 1em 3em;
+}
+
+.home-grid li {
+  line-height: 1.9;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.2em;
+}
+
+.home-grid h1 {
+  margin-bottom: 0;
+}
+
+.home-grid-right {
+  text-align: left;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.button-row {
+  text-align: center;
+  margin: 1em;
+}
+
+a.join-button, a.join-button:visited {
+  display: inline-block;
+  width: 300px;
+  padding: 0 1em;
+  background-color: #6fa8dc;
+  color: white;
+  font-size: 2em;
+  text-align: center;
+  line-height: 2.0;
+  box-shadow: 2px 2px 4px silver;
+  border-radius: 3px;
+}
+
+a.join-button:hover {
+  margin-top: 1px;
+  margin-left: 1px;
+  box-shadow: 1px 1px 4px lightgrey;
+}
+
+a.join-button:active {
+  background-color: #3d85c6;
+  margin-top: 2px;
+  margin-left: 2px;
+  box-shadow: none;
+}

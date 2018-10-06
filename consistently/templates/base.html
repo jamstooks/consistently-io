@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <link rel="icon" href="">
+  <link rel="icon" href="{% static 'img/favicon.ico' %}">
 
   <title>consistently.io - development goals</title>
   
@@ -25,6 +25,7 @@
   <link rel="stylesheet" href="{% static 'css/nav.css' %}">
   <link rel="stylesheet" href="{% static 'css/integrations.css' %}">
   <link rel="stylesheet" href="{% static 'css/status.css' %}">
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
   {% endblock %}
 </head>
 
@@ -36,50 +37,13 @@
   <div class="content">
     {% block content %}{% endblock %}
   </div>
-
-  <!--
-  <nav class="navbar navbar-expand-md justify-content-md-center navbar-light mb-4" id="navbarsExample10">
-    <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a href="/u/">
-        <img src="{% static 'img/logo.svg' %}" class="logo">
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
-      </li>
-      {% if user.is_authenticated %}
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="authdrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{ user.username }}
-            </a>
-        <div class="dropdown-menu" aria-labelledby="authdrop">
-          <a class="dropdown-item" href="{% url 'repos:profile' %}">Profile</a>
-          <a class="dropdown-item" href="{% url 'logout' %}">Sign out</a>
-        </div>
-      </li>
-      {% else %}
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'social:begin' 'github' %}">Sign in with Github</a>
-      </li>
-      {% endif %}
-    </ul>
-  </nav>
-
-  <main role="main" class="container">
-  </main>
   
-  
-    <footer>
-      <p>
-        Something Simple by<br>
-        <a href="#" class="brand">B.W. Stooks</a>
-      </p>
-    </footer>
-  -->
+    <!--<footer>-->
+    <!--  <p>-->
+    <!--    Something Simple by<br>-->
+    <!--    <a href="#" class="brand">B.W. Stooks</a>-->
+    <!--  </p>-->
+    <!--</footer>-->
 
   {% block js %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cash/2.3.3/cash.min.js"></script>

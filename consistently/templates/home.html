@@ -1,5 +1,53 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block content %}
-    <h1>It's good to have goals</h1>
+    
+  <div class="home-grid">
+    <div>
+      <!--<img-->
+      <!--  src="{% static 'img/preview.png' %}"-->
+      <!--  alt="preview of repository report" />-->
+      <div class="status-box passed">
+        <div class="status-box-logo html-integration-background"></div>
+        <div class="status-box-icon"></div>
+        <div class="status-box-detail">
+            Valid HTML
+        </div>
+      </div>
+      <div class="status-box passed">
+        <div class="status-box-logo travis-integration-background"></div>
+        <div class="status-box-icon"></div>
+        <div class="status-box-detail">
+            Passed
+        </div>
+      </div>
+      
+      <div class="status-box failed">
+        <div class="status-box-logo coveralls-integration-background"></div>
+        <div class="status-box-icon"></div>
+        <div class="status-box-detail">
+            75% Coverage
+        </div>
+      </div>
+      
+    </div>
+    <div class="home-grid-right">
+      <h1>
+        Better Goals == Better Software
+      </h1>
+      <ul>
+        <li>Track all your integrations in one place</li>
+        <li>Easily sync with github</li>
+        <li>Know if your applications are meeting your goals</li>
+        <li><strong>FREE for open source</strong></li>
+      </ul>
+    </div>
+  </div>
+  <div class="button-row">
+    <a class="join-button" href="{% url 'social:begin' 'github' %}">
+      Sign in with Github</a>
+  </div>
+    
 {% endblock %}

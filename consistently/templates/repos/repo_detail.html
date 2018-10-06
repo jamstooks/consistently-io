@@ -9,7 +9,7 @@
           <div class="status-box {{ status.status }}">
               <div class="status-box-logo {{ status.integration.integration_type }}-integration-background"></div>
               <div class="status-box-icon"></div>
-              <div class="status-box-detail {{ status.status }}">
+              <div class="status-box-detail">
                   {% if status.value %}
                     {{ status.value|title }}
                   {% else %}

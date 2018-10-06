@@ -30,6 +30,7 @@ class IntegrationConfig extends React.Component {
     let toggleClass = 'inactive';
     let configClass = 'config ';
     let description = null;
+    let notes = null;
     let loadingIndicator = null;
 
     if (this.props.integration.isFetching) {
@@ -50,6 +51,8 @@ class IntegrationConfig extends React.Component {
 
         description = (
           <ReactMarkdown source={fullIntegration.description} />);
+        notes = (
+          <ReactMarkdown source={fullIntegration.notes} />);
         configClass += 
           fullIntegration.integration_type + "-integration-background";
 
@@ -82,7 +85,7 @@ class IntegrationConfig extends React.Component {
 
         {warning}        
         {form}
-        {/*}<p className="notes"></p>{*/}
+        <p className="notes">{notes}</p>
       </div>
     );
   }

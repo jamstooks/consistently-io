@@ -24,11 +24,10 @@ class Travis(Integration):
     @property
     def notes(self):
         return """
-        `Build Time` an *optional* rough estimate of how many seconds it takes
-        to run your tests on travis. consistently.io will keep retrying , but
-        if your build time is consistently over 5 minutes, we recommend setting
-        this to avoid timeouts
-        """
+Build Time is an *optional* rough estimate of how many seconds it takes
+to run your tests. We will retry, but
+if your build time is consistently over 5 minutes, we recommend setting
+this to avoid timeouts."""
 
     def get_serializer_class(self):
         from .serializer import TravisSerializer

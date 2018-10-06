@@ -1,6 +1,8 @@
 # Todo List
 
 - [ ] reload delay the repo list page if repos are `waiting`
+- [ ] snackbar for updates
+- [ ] mobile support
 
 ## Performance
 
