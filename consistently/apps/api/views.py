@@ -3,6 +3,8 @@ from django.conf import settings
 from django.core import serializers
 from django.urls import reverse
 from django.db.utils import IntegrityError
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import generics
 from rest_framework import mixins
@@ -196,6 +198,7 @@ class IntegrationDetailView(
         return self.get_object().get_serializer_class()
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class GithubWebhookView(APIView):
     """
     handles webooks connectons from github

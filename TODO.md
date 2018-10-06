@@ -23,7 +23,8 @@
 - [ ] query analysis and optimizations
 - [ ] better icons... number icons can just use a font.
 - [ ] GDPR
-- [ ] search
+- [ ] general search + quick search in profile
+- [ ] use git secret for webhooks
 
 ## Check error conditions
 - [ ] integration status in permanant wait
