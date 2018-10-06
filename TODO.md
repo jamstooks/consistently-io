@@ -1,5 +1,6 @@
 # Todo List
 
+- [ ] 404 + 500 pages
 - [ ] reload delay the repo list page if repos are `waiting`
 - [ ] snackbar for updates
 - [ ] mobile support
