@@ -7,4 +7,5 @@ djangorestframework==3.8.2
 gunicorn==19.9.0
 ipython==6.5.0
 PyGithub==1.39
+redis==2.10.6
 social-auth-app-django==2.1.0

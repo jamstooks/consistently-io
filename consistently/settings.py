@@ -207,13 +207,11 @@ WEBHOOK_URL = reverse_lazy('api:github-webhook')
 # Celery
 # ==============================================================================
 
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
-# CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/myvhost'
+CELERY_BROKER_URL = os.environ.get(
+    'REDIS_URL', 'amqp://guest:guest@localhost//')
+CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL', 'django-db')
+
 CELERY_TASK_ALWAYS_EAGER = os.environ.get('CELERY_ALWAYS_EAGER', False)
-
-# @todo - consider 'django-cache' down the road
-CELERY_RESULT_BACKEND = 'django-db'
-
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
