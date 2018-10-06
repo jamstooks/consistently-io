@@ -20,6 +20,7 @@ def logout(request):
 
 
 urlpatterns = [
+    url(r'^.well-known/acme-challenge/', include('acme_challenge.urls')),
     url(r'^_ad/', admin.site.urls),
     path(
         'api/',

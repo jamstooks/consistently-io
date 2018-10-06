@@ -1,7 +1,9 @@
 # Todo List
 
+- [ ] travis.yml
+- [ ] handle task retry max exceeded! - look into delay compounding
 - [ ] 404 + 500 pages
-- [ ] reload delay the repo list page if repos are `waiting`
+- [ ] reload delayheroku buildpacks:set heroku/python the repo list page if repos are `waiting`
 - [ ] snackbar for updates
 - [ ] mobile support
 - [ ] auto code formatting
