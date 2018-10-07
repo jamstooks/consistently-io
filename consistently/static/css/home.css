@@ -22,11 +22,15 @@
   margin-bottom: 0;
 }
 
+.home-grid-left {
+  text-align: center;
+}
+
 .home-grid-right {
   text-align: left;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .button-row {
