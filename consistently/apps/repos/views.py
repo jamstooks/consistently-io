@@ -33,6 +33,8 @@ class PrefixRepoListView(TemplateView):
         for r in repos:
             repo = {
                 'full_name': r.full_name,
+                'prefix': r.prefix,
+                'name': r.name,
                 'url': reverse('repos:repo-detail', args=(r.prefix, r.name)),
                 'settings_url': reverse('repos:repo-settings', args=(r.prefix, r.name))
             }
