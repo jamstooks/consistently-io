@@ -15,7 +15,7 @@ def react_vars(request):
 def github_avatar(request):
 
     if request.user.is_authenticated:
-        base_url = "https://avatars0.githubusercontent.com/u/%s?s=40&v=4"
+        base_url = "https://avatars0.githubusercontent.com/u/%s?s=32&v=4"
         github = request.user.social_auth.get(provider='github')
         return {
             'avatar': base_url % github.uid
