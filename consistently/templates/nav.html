@@ -1,7 +1,7 @@
 {% load static %}
 
 <div class="nav">
-  <div onclick="toggleMenu('left-menu');">
+  <div onclick="toggleMenu('left-menu');" class="nav-left">
     <img src="{% static 'img/menu_icon.svg' %}" class="nav-img" alt="menu">
   </div>
   <div class="center">
@@ -11,8 +11,11 @@
   </div>
   <div onclick="toggleMenu('right-menu');" class="nav-right">
     <span>
-      <span class="octicon octicon-mark-github"></span>
-      {% if user.is_authenticated %} {{ user.username }} {% endif %}
+      {% if user.is_authenticated %}
+        <img src="{{ avatar }}" class="avatar" alt="{{ user.username }}" />
+      {% else %}
+        <span class="octicon octicon-mark-github"></span>
+      {% endif %}
     </span>
   </div>
 </div>
