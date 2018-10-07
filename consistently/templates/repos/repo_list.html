@@ -13,7 +13,7 @@
     <div class="repo-box">
       <div class="repo-box-repo">
         <a href="{{ repo.url }}">
-            {{repo.full_name}}
+            {{ repo.prefix }} / {{ repo.name }}
           </a>
       </div>
       {% if prefix_matches_user %}

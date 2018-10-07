@@ -15,7 +15,7 @@ class StatusBox extends React.Component {
     }
 
     // Repo name and link
-    let fullName = this.props.repo.prefix + "/" + this.props.repo.name;
+    let fullName = this.props.repo.prefix + " / " + this.props.repo.name;
     let repoName = !is_active ?
       fullName :
       (<a href={this.props.repo.url}>{fullName}</a>);
