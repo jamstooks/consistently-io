@@ -10,15 +10,10 @@ Measure deployment goals.
 
 ## What is it?
 
-Integrates with a variety of tools that track your deployment status like:
-
- - HTML Validation
- - Travis CI
-
-And coming very soon:
-
- - Coveralls
- - Google Page Speed Insights
+Integrates with a variety of tools that track your deployment status like
+**HTML Validation** and **Travis CI**
+and more coming soon, like:
+**Coveralls** and **Google Page Speed Insights**
 
 ## Why another deployment tool?
 
@@ -26,6 +21,9 @@ Because it makes sense to keep this all in one place. When I'm
 trying to get a bird's eye view of my applications, I found myself
 checking the badges in README's and then directly connecting to
 evaluation services like HTML Validator and Page Speed Insights.
+
+This puts all these tools in one place and even adds a few there
+aren't already badges for.
 
 The upcoming "groups" functionality will make this even easier.
 See the Roadmap for more details.
