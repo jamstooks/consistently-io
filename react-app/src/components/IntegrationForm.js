@@ -37,7 +37,7 @@ class IntegrationForm extends React.Component {
     console.log("submitting");
     console.log(this.props.values);
     this.props.handleSubmit(this.props.values);
-  }, 400);
+  }, 1000);
 
   render() {
 
