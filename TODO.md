@@ -1,8 +1,8 @@
 # Todo List
 
-- [ ] break up react and django repos for testing
+- [x] break up react and django repos for testing
 - [ ] increase lag on auto-save
-- [ ] travis.yml
+- [x] travis.yml
 - [ ] auto code formatting
 - [x] analytics
 - [x] mobile support
@@ -11,6 +11,7 @@
 - [ ] reload repo list if repos are `waiting`
 - [ ] snackbar for updates
 - [ ] logging
+- [ ] contributing guide
 
 ## Performance
 
