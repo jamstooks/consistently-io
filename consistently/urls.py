@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth import logout as auth_logout
 from django.shortcuts import redirect
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 
 
@@ -36,6 +36,9 @@ urlpatterns = [
         include('rest_framework.urls', namespace='rest_framework')),
     url('', include('social_django.urls')),  # why can't this have a prefix??
 
-    url('', TemplateView.as_view(template_name="home.html"))
+    re_path(
+        '^$',
+        TemplateView.as_view(template_name="home.html"),
+        name='home')
 
 ]
