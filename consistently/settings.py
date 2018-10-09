@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'acme_challenge',
     'django_celery_results',
     'rest_framework',
     'social_django',
