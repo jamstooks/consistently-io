@@ -21,3 +21,8 @@ def github_avatar(request):
             'avatar': base_url % github.uid
         }
     return {'avatar': None}
+
+
+def analytics(request):
+
+    return {'GA_PROPERTY_ID': settings.GA_PROPERTY_ID}

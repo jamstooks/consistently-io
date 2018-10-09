@@ -82,6 +82,7 @@ TEMPLATES = [
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
                 'consistently.context_processors.github_avatar',
+                'consistently.context_processors.analytics',
             ],
         },
     },
@@ -217,3 +218,9 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
 django_heroku.settings(locals(), databases=not DEBUG)
+
+# ==============================================================================
+# Google Analytics
+# ==============================================================================
+
+GA_PROPERTY_ID = os.environ.get('GA_PROPERTY_ID', None)

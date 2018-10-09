@@ -7,8 +7,9 @@ from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 
 
-""" @todo
-    - find a better place for logout.
+"""
+    @todo
+    - consider a different place for logout.
     - add prefix to social auth 
 """
 
