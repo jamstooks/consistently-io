@@ -1,0 +1,17 @@
+language: python
+python:
+- '3.6'
+addons:
+  postgresql: '9.3'
+services:
+    - postgresql
+env:
+  global:
+  - DJANGO_SETTINGS_MODULE=consistently.settings
+  - DATABASE_URL=postgresql://postgres@localhost/travis_ci_test
+install:
+    - npm install
+    - pip install -U pip
+    - pip install -r requirements.txt
+notifications:
+  email: false

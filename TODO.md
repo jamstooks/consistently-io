@@ -1,8 +1,8 @@
 # Todo List
 
+- [ ] break up react and django repos for testing
 - [ ] travis.yml
 - [ ] auto code formatting
-- [ ] break up react and django repos
 - [x] analytics
 - [x] mobile support
 - [x] 404 + 500 pages
