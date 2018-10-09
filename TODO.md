@@ -1,7 +1,7 @@
 # Todo List
 
 - [x] break up react and django repos for testing
-- [ ] increase lag on auto-save
+- [x] increase lag on auto-save
 - [x] travis.yml
 - [ ] auto code formatting
 - [x] analytics
@@ -12,6 +12,7 @@
 - [ ] snackbar for updates
 - [ ] logging
 - [ ] contributing guide
+- [ ] Repo BADGES!!
 
 ## Performance
 
