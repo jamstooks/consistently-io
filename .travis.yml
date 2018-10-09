@@ -14,5 +14,8 @@ install:
 - npm install
 - pip install -U pip
 - pip install -r requirements.txt
+- python manage.py collectstatic
+script:
+  - python manage.py test -v3
 notifications:
   email: false
