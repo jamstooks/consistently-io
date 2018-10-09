@@ -6,6 +6,7 @@ Measure deployment goals.
 
 [![Build Status](https://travis-ci.org/jamstooks/consistently-io.svg?branch=master)](https://travis-ci.org/jamstooks/consistently-io)
 [![Coverage Status](https://coveralls.io/repos/github/jamstooks/consistently-io/badge.svg?branch=master)](https://coveralls.io/github/jamstooks/consistently-io?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/8a7f09dd8b806366e45e/maintainability)](https://codeclimate.com/github/jamstooks/consistently-io-react/maintainability)
 
 ## What is it?
 
