@@ -1,12 +1,6 @@
 # Todo List
 
-- [x] break up react and django repos for testing
-- [x] increase lag on auto-save
-- [x] travis.yml
-- [ ] auto code formatting
-- [x] analytics
-- [x] mobile support
-- [x] 404 + 500 pages
+- [ ] store travis build data for quick linking
 - [ ] handle task retry max exceeded! - look into delay compounding
 - [ ] reload repo list if repos are `waiting`
 - [ ] snackbar for updates
@@ -23,22 +17,22 @@
 
 ## Down the road...
 
+- [ ] GDPR
+ - [ ] offer a "delete history" option
 - [ ] how to handle repo name or ownership changes...
     - there doesn't seem to be a webhook for it, so maybe a scheduled task?
-- [ ] eventually offer a "delete history" option
 - [ ] off-click listener for menus
 - [ ] query analysis and optimizations
 - [ ] better icons... number icons can just use a font.
-- [ ] GDPR
 - [ ] general search + quick search in profile
 - [ ] use git secret for webhooks
+- [ ] auto code formatting
 
 ## Check error conditions
 - [ ] integration status in permanant wait
 
-
 ## Next integrations
-- [ ] coveralls
-- [ ] code climate
+- [ ] [coveralls](https://docs.coveralls.io/api-introduction)
+- [ ] [google page speed insights](https://developers.google.com/speed/docs/insights/v4/getting-started)
+- [ ] [code climate](https://developer.codeclimate.com/#repositories)
 - [ ] css validation
-- [ ] google page speed insights
