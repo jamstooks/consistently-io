@@ -221,3 +221,18 @@ django_heroku.settings(locals(), databases=not DEBUG)
 # ==============================================================================
 
 GA_PROPERTY_ID = os.environ.get('GA_PROPERTY_ID', None)
+
+# ==============================================================================
+# Sentry
+# ==============================================================================
+
+SENTRY_DSN = os.environ.get('SENTRY_DSN', None)
+
+if SENTRY_DSN:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()]
+    )
