@@ -1,0 +1,5 @@
+[run]
+source = consistently
+omit =
+    *tests*
+    *migrations*
