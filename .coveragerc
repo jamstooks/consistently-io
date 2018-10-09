@@ -3,3 +3,4 @@ source = consistently
 omit =
     *tests*
     *migrations*
+    consistently/wsgi.py

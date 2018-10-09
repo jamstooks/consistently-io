@@ -178,9 +178,6 @@ REST_FRAMEWORK = {
 
 REACT_APP_NAME = 'react-app'
 
-if DEBUG:
-    MIDDLEWARE.append('consistently.dev_middleware.dev_cors_middleware')
-
 REACT_BASE_DIR = os.path.join(BASE_DIR, REACT_APP_NAME)
 REACT_BUILD_DIR = os.path.join(REACT_BASE_DIR, 'build')
 
