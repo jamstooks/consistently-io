@@ -6,7 +6,7 @@ Measure deployment goals.
 
 [![Build Status](https://travis-ci.org/jamstooks/consistently-io.svg?branch=master)](https://travis-ci.org/jamstooks/consistently-io)
 
-## What?
+## What is it?
 
 Integrates with a variety of tools that track your deployment status like:
 
@@ -18,7 +18,7 @@ And coming very soon:
  - Coveralls
  - Google Page Speed Insights
 
-## Why?
+## Why another deployment tool?
 
 Because it makes sense to keep this all in one place. When I'm
 trying to get a bird's eye view of my applications, I found myself
@@ -35,4 +35,3 @@ Here are some of the original planning materials:
  - [Application Design](https://drive.google.com/open?id=1j5A7sRWo01cEPBzCiQV0zStm0fTBex545RI6AWtJt9Q)
  - [Initial Mockup](https://docs.google.com/presentation/d/1N-2qJb325pm6pOzqSwI1Kun0IzJX4w3EAW76_5VBz0I/edit?usp=sharing)
  - [Components](https://drive.google.com/open?id=1WLvdHkrl52es5qSziN3F6X9mmE_vhxKQ4ormf_mxpjA)
-
