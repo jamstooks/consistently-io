@@ -57,7 +57,7 @@ this to avoid timeouts."""
         start = self.get_task_delay()
         delay = start / 4.0 if start else 0
 
-        return {'max_retries': 4, 'countdown': delay}
+        return {'max_retries': 10, 'countdown': delay}
 
     def run(self, status):
         """
