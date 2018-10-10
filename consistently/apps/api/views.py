@@ -301,7 +301,7 @@ class GithubWebhookView(APIView):
                 task = run_integration.apply_async(
                     args=(status.id,),
                     kwargs=i.get_task_kwargs(),
-                    delay=i.get_task_delay())
+                    countdown=i.get_task_delay())
 
                 # store the task id on the status object
                 # but only update the task_id in case the

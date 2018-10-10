@@ -36,6 +36,8 @@ this to avoid timeouts."""
     def get_task_delay(self):
         """
         How long to wait before starting task initially
+
+        defaults to 2 minutes, but sets a minimum of 16 seconds
         """
         start = self.build_time if self.build_time != None else 120
         if start < 16:

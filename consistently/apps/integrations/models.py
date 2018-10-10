@@ -72,7 +72,8 @@ class Integration(TimeStampedModel):
 
     def get_task_kwargs(self):
         """
-        These are the kwargs supplied to the celery task
+        These are the kwargs supplied to the celery task itself
+        that is, `integrations.tasks.run_integration`
         """
         return {}
 

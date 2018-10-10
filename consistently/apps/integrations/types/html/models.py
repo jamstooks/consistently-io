@@ -37,8 +37,6 @@ class HTMLValidation(Integration):
         """
         return get_validation_status(integration_status)
 
-    def get_task_kwargs(self):
-        """
-        These are the kwargs supplied to the celery task
-        """
-        return {'countdown': 0}  # self.deployment_delay}
+    def get_task_delay(self):
+
+        return self.deployment_delay * 1.5
