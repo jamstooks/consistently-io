@@ -41,5 +41,6 @@ def run_integration(self, id, max_retries=0, countdown=60):
         i = integration.run(status)
         return
     except NeedsToRetry as exc:
+        print("restarting task for %s" % status)
         raise self.retry(
             exc=exc, max_retries=max_retries, countdown=countdown)
