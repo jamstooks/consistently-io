@@ -2,7 +2,8 @@
 
 - [ ] store travis build data for quick linking
 - [ ] handle task retry max exceeded! - look into delay compounding
-- [ ] reload repo list if repos are `waiting`
+- [x] is HTML Validation delay working?
+- [ ] reload repo list page if repos are `waiting`
 - [ ] snackbar for updates
 - [ ] logging
 - [ ] contributing guide
