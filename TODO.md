@@ -7,7 +7,7 @@
 - [ ] snackbar for updates
 - [ ] logging
 - [ ] contributing guide
-- [ ] Repo BADGES!!
+- [ ] Repo BADGES!! https://github.com/google/pybadges
 
 ## Performance
 
@@ -28,12 +28,16 @@
 - [ ] general search + quick search in profile
 - [ ] use git secret for webhooks
 - [ ] auto code formatting
+- [ ] store and display the commit message
 
 ## Check error conditions
 - [ ] integration status in permanant wait
 
 ## Next integrations
-- [ ] [coveralls](https://docs.coveralls.io/api-introduction)
+- [x] [coveralls](https://docs.coveralls.io/api-introduction)
+- [ ] [codecov](https://docs.codecov.io/reference#section-get-a-single-commit)
 - [ ] [google page speed insights](https://developers.google.com/speed/docs/insights/v4/getting-started)
 - [ ] [code climate](https://developer.codeclimate.com/#repositories)
 - [ ] css validation
+- [ ] issue tracking?
+- [ ] code velocity?

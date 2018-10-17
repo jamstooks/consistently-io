@@ -1,4 +1,5 @@
 from consistently.tests.base import BaseTestCase
+from consistently.tests.utils import MockRequest
 from .models import Travis
 from .utils import (
     get_travis_state, CANCELED, CREATED, ERRORED, FAILED, PASSED,
@@ -15,15 +16,6 @@ class TravisTestCase(BaseTestCase):
     def test_create(self):
         travis = Travis.objects.create(repo=self.repo, is_active=False)
         self.assertEqual(travis.integration_type, 'travis')
-
-
-class MockRequest:
-    def __init__(self, status_code=200, json_data={}):
-        self.status_code = status_code
-        self.json_data = json_data
-
-    def json(self):
-        return self.json_data
 
 
 class WorkerTestCase(BaseTestCase):

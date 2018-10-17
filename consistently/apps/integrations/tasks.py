@@ -2,6 +2,8 @@ from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 from celery.exceptions import MaxRetriesExceededError
 
+from django.core import serializers
+
 from .models import IntegrationStatus
 
 
@@ -14,6 +16,43 @@ class NeedsToRetry(Exception):
     and retry_delay.
     """
     pass
+
+
+def queue_integration_tasks(commit):
+    """
+    Starts all integration tasks for a commit
+    """
+
+    # create `IntegrationStatus` objects for each integration
+    integrations = commit.repo.integration_set.filter(is_active=True)
+    for integration in integrations:
+
+        i = integration.type_instance
+
+        data = serializers.serialize('json', [i, ])
+        status = IntegrationStatus.objects.create(
+            integration=i, commit=commit, with_settings=data)
+
+        #  queue up worker for each IntegrationStatus
+        countdown = i.get_task_delay()
+        task_kwargs = i.get_task_kwargs()
+
+        print("queuing task for %s" % i)
+        print("with countdown=%d" % countdown)
+        print("with kwargs=")
+        print(task_kwargs)
+        print("with settings")
+        print(data)
+        print('\n')
+
+        task = run_integration.apply_async(
+            args=(status.id,), kwargs=task_kwargs, countdown=countdown)
+
+        # store the task id on the status object
+        # but only update the task_id in case the
+        # task has already modified the status
+        status.task_id = task.id
+        status.save(update_fields=["task_id"])
 
 
 @shared_task(bind=True)

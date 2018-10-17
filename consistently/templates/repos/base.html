@@ -36,7 +36,9 @@
       [ <a href="{{ repo.latest_commit.github_url }}">
           {{ repo.latest_commit }}</a> ]
     {% else %}
-      <a href="{{ repo.github_url }}">{{ repo.github_url }}</a>
+      <a href="{{ repo.github_url }}">
+        Awaiting new commit
+      </a>
     {% endif %}
   </p>
   {% endif %}

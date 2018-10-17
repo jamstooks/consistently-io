@@ -8,7 +8,6 @@ class Repository(TimeStampedModel):
     This represents a linked github repository.
 
     @todo - github_id to primary key
-    @todo - should we store the latest commit on this model for performance?
     @todo - index on prefix/name
     @todo - consider storing a github webhook secret
     """
@@ -34,6 +33,38 @@ class Repository(TimeStampedModel):
     def github_url(self):
         return "https://github.com/%s/" % self.full_name
 
+    def init_integrations(self):
+        """
+        Creates integration objects for all available integration types
+        """
+        from consistently.apps.integrations.models import INTEGRATION_TYPES
+        for Klass in INTEGRATION_TYPES.values():
+            try:
+                i = Klass.objects.get(repo=self)
+            except Klass.DoesNotExist:
+                Klass.objects.create(repo=self)
+
+        return self.integration_set.all()
+
+    def get_active_integrations(self, create=False):
+        """
+        finds all the active integrtaions for a 
+        """
+
+        from consistently.apps.integrations.models import INTEGRATION_TYPES
+        #  identify all active integrations for this repository
+        active_integrations = []
+        for Klass in INTEGRATION_TYPES.values():
+            try:
+                i = Klass.objects.get(repo=self)
+                if i.is_active:
+                    active_integrations.append(i)
+            except Klass.DoesNotExist:
+                # there may be a few instances where new integrations
+                # haven't been created for the repo yet.
+                pass
+        return active_integrations
+
 
 class Commit(models.Model):
     repo = models.ForeignKey(Repository, on_delete=models.CASCADE)
@@ -45,7 +76,7 @@ class Commit(models.Model):
     github_timestamp = models.DateTimeField()
 
     def __str__(self):
-        return self.sha[:6]
+        return "%s (%s)" % (self.sha[:6], self.repo)
 
     def github_url(self):
         return "%scommit/%s/" % (self.repo.github_url, self.sha)
