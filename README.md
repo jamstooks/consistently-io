@@ -11,9 +11,10 @@ Measure deployment goals.
 ## What is it?
 
 Integrates with a variety of tools that track your deployment status like
-**HTML Validation** and **Travis CI**
+**HTML Validation**, **Travis CI**, **Coveralls**
+
 and more coming soon, like:
-**Coveralls** and **Google Page Speed Insights**
+**CodeCov** and **Google Page Speed Insights** and **Code Climate**
 
 ## Why another deployment tool?
 

@@ -125,7 +125,9 @@ class IntegrationStatus(TimeStampedModel):
 """
 from .types.html.models import HTMLValidation
 from .types.travis.models import Travis
+from .types.coveralls.models import Coveralls
 
 INTEGRATION_TYPES = OrderedDict()
 INTEGRATION_TYPES['html'] = HTMLValidation
 INTEGRATION_TYPES['travis'] = Travis
+INTEGRATION_TYPES['coveralls'] = Coveralls

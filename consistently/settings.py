@@ -228,7 +228,7 @@ GA_PROPERTY_ID = os.environ.get('GA_PROPERTY_ID', None)
 
 SENTRY_DSN = os.environ.get('SENTRY_DSN', None)
 
-if SENTRY_DSN:
+if SENTRY_DSN and not DEBUG:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
 

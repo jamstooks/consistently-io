@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404
 from django.conf import settings
-from django.core import serializers
 from django.urls import reverse
 from django.db.utils import IntegrityError
 from django.utils.decorators import method_decorator
@@ -20,7 +19,8 @@ from json import loads
 from consistently.apps.repos.models import Repository, Commit
 from consistently.apps.integrations.models import (
     Integration, IntegrationStatus, INTEGRATION_TYPES)
-from consistently.apps.integrations.tasks import run_integration
+from consistently.apps.integrations.tasks import (
+    run_integration, queue_integration_tasks)
 
 from .serializers import (
     RepositoryUpdateSerializer, IntegrationListSerializer)
@@ -150,16 +150,13 @@ class IntegrationListView(
     permission_classes = (IsAuthenticated, HasRepoAccess)
 
     def get_queryset(self):
+        """
+        Returns the available integrations
+        """
 
         # ensure that all available integrations exist for the repo
         repo = Repository.objects.get(github_id=self.kwargs['github_id'])
-        for Klass in INTEGRATION_TYPES.values():
-            try:
-                i = Klass.objects.get(repo=repo)
-            except Klass.DoesNotExist:
-                Klass.objects.create(repo=repo)
-
-        return Integration.objects.filter(repo=repo)
+        return repo.init_integrations()
 
     def list(self, request, *args, **kwargs):
         """
@@ -209,112 +206,48 @@ class GithubWebhookView(APIView):
     def post(self, request, format=None):
 
         try:
-            obj = loads(request.body)
-            github_id = obj['repository']['id']
+            body = loads(request.body)
 
             # Initial hook creation
-            if "hook_id" in obj.keys():
+            if "hook_id" in body.keys():
                 return Response(data={
                     'status': "ACCEPTED",
                     'message': "Thanks for connecting with Consistently.io!"
                 }, status=200)
 
-            # See if the repo exists locally
             try:
-                repo = Repository.objects.get(github_id=github_id)
-            except:
-                return Response(data={
-                    'status': "REJECTED",
-                    'message': "Repository does not exist on Consistently.io"
-                }, status=400)
+                github_id = body['repository']['id']
+                self.repo = Repository.objects.get(github_id=github_id)
+            except Repository.DoesNotExist:
+                self.repo = None
 
-            # Only process active repos
-            if not repo.is_active:
-                return Response(data={
-                    'status': "REJECTED",
-                    'repo': repo.name,
-                    'message': "Repository not active on Consistently.io"
-                }, status=400)
-
-            # Only process public repos
-            # @todo - consider deactivating repo
-            if obj['repository']['private']:
-                return Response(data={
-                    'status': "REJECTED",
-                    'repo': repo.name,
-                    'message': "Repository not public"
-                }, status=400)
-
-            # accept only pushes to master
-            if obj['ref'] != "refs/heads/master":
-                return Response(data={
-                    'status': "REJECTED",
-                    'repo': repo.name,
-                    'message': "Does not apply to master"
-                }, status=400)
-
-            commit_id = obj['head_commit']['id']
+            # Catch any rejection scenarios
+            response = self.catch_rejections(body)
+            if response:
+                return response
 
             # add a new commit to the repository
-            try:
-                commit = Commit.objects.create(
-                    repo=repo,
-                    sha=obj['head_commit']['id'],
-                    message=obj['head_commit']['message'],
-                    github_timestamp=obj['head_commit']['timestamp']
-                )
-                # @todo - there may be a race condition here
-                # we might need to do a timestamp compare
-                repo.latest_commit = commit
-                repo.save()
-            except IntegrityError:
-                return Response(data={
-                    'status': "REJECTED",
-                    'repo': repo.name,
-                    'commit': obj['head_commit']['id'],
-                    'message': "Commit already received"
-                }, status=400)
+            commit = Commit.objects.create(
+                repo=self.repo,
+                sha=body['head_commit']['id'],
+                message=body['head_commit']['message'],
+                github_timestamp=body['head_commit']['timestamp']
+            )
+            # @todo - there may be a race condition here
+            # we might need to do a timestamp compare
+            self.repo.latest_commit = commit
+            self.repo.save()
 
-            # queue up worker to... (process commit)
-
-            #  identify all active integrations for this repository
-            active_integrations = []
-            for Klass in INTEGRATION_TYPES.values():
-                try:
-                    i = Klass.objects.get(repo=repo)
-                    if i.is_active:
-                        active_integrations.append(i)
-                except Klass.DoesNotExist:
-                    # there may be a few instances where new integrations
-                    # haven't been created for the repo yet.
-                    pass
-
-            # create `IntegrationStatus` objects for each integration
-            for i in active_integrations:
-
-                data = serializers.serialize('json', [i, ])
-                status = IntegrationStatus.objects.create(
-                    integration=i, commit=commit, with_settings=data)
-
-                #  queue up worker for each IntegrationStatus
-                print("triggering task")
-                task = run_integration.apply_async(
-                    args=(status.id,),
-                    kwargs=i.get_task_kwargs(),
-                    countdown=i.get_task_delay())
-
-                # store the task id on the status object
-                # but only update the task_id in case the
-                # task has already modified the status
-                status.task_id = task.id
-                status.save(update_fields=["task_id"])
+            # queue up workers
+            queue_integration_tasks(commit)
 
             # log the latest commit
             return Response(data={
                 'status': "ACCEPTED",
-                'repo': repo.name,
+                'repo': self.repo.name,
                 'commit': commit.sha,
-                'integrations': [i.integration_type for i in active_integrations]
+                'integrations': [
+                    i.integration_type for i in self.repo.get_active_integrations()]
             }, status=200)
 
         except Exception as e:
@@ -324,3 +257,54 @@ class GithubWebhookView(APIView):
                 'status': "ERROR",
                 'message': "%s: %s" % message
             }, status=500)
+
+    def catch_rejections(self, body):
+        """
+        Detects all the situations where a request will be rejected
+
+        Side affect: sets `self.repo`
+        """
+
+        # Repo must exist locally
+        if not self.repo:
+            return Response(data={
+                'status': "REJECTED",
+                'message': "Repository does not exist on Consistently.io"
+            }, status=400)
+
+        # Only process active repos
+        if not self.repo.is_active:
+            return Response(data={
+                'status': "REJECTED",
+                'repo': self.repo.name,
+                'message': "Repository not active on Consistently.io"
+            }, status=400)
+
+        # Only process public repos
+        # @todo - consider deactivating repo locally
+        if body['repository']['private']:
+            return Response(data={
+                'status': "REJECTED",
+                'repo': self.repo.name,
+                'message': "Repository not public"
+            }, status=400)
+
+        # accept only pushes to master
+        if body['ref'] != "refs/heads/master":
+            return Response(data={
+                'status': "REJECTED",
+                'repo': self.repo.name,
+                'message': "Does not apply to master"
+            }, status=400)
+
+        # the commit already exists locally
+        sha = body['head_commit']['id']
+        if Commit.objects.filter(sha=sha).count() is not 0:
+            return Response(data={
+                'status': "REJECTED",
+                'repo': self.repo.name,
+                'commit': sha,
+                'message': "Commit already received"
+            }, status=400)
+
+        return None
