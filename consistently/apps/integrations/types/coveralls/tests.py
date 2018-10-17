@@ -11,9 +11,39 @@ from unittest import mock
 
 class CoverallsTestCase(BaseTestCase):
 
+    def setUp(self):
+        super(CoverallsTestCase, self).setUp()
+        self.i = Coveralls.objects.create(repo=self.repo, is_active=False)
+        self.c = self.i.type_instance
+
     def test_create(self):
-        i = Coveralls.objects.create(repo=self.repo, is_active=False)
-        self.assertEqual(i.integration_type, 'coveralls')
+        self.assertEqual(self.i.integration_type, 'coveralls')
+
+    def test_delay(self):
+
+        # empty build time
+        self.assertEqual(self.c.get_task_delay(), 120)
+
+        # short build time
+        self.c.build_time = 1
+        self.assertEqual(self.c.get_task_delay(), 16)
+
+        # longer build time
+        self.c.build_time = 26
+        self.assertEqual(self.c.get_task_delay(), 26)
+
+    def test_task_kwargs(self):
+        self.assertEqual(
+            self.c.get_task_kwargs(),
+            {'max_retries': 10, 'countdown': (120+30)/4})
+
+    def test_serialization(self):
+
+        Klass = self.c.get_serializer_class()
+        serializer = Klass(instance=self.repo)
+        self.assertCountEqual(
+            serializer.data.keys(),
+            ['is_active', 'build_time'])
 
 
 class WorkerTestCase(BaseTestCase):
@@ -32,7 +62,13 @@ class WorkerTestCase(BaseTestCase):
 
     def test_run(self):
 
-        # network error should return None
+        # network error should raise retry
+        with mock.patch(
+                'requests.get', side_effect=Exception('network')):
+            with self.assertRaises(NeedsToRetry):
+                self.coveralls.run(self.status)
+
+        # 500 error should rais retry
         with mock.patch(
                 'requests.get', return_value=MockRequest(status_code=500)):
             with self.assertRaises(NeedsToRetry):
@@ -76,13 +112,3 @@ class WorkerTestCase(BaseTestCase):
 
             with self.assertRaises(NeedsToRetry):
                 self.coveralls.run(self.status)
-
-
-class SerializerTestCase(BaseTestCase):
-
-    def test_object_serialization(self):
-
-        serializer = CoverallsSerializer(instance=self.repo)
-        self.assertCountEqual(
-            serializer.data.keys(),
-            ['is_active', 'build_time'])

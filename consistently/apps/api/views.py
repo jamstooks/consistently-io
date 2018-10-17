@@ -156,13 +156,7 @@ class IntegrationListView(
 
         # ensure that all available integrations exist for the repo
         repo = Repository.objects.get(github_id=self.kwargs['github_id'])
-        for Klass in INTEGRATION_TYPES.values():
-            try:
-                i = Klass.objects.get(repo=repo)
-            except Klass.DoesNotExist:
-                Klass.objects.create(repo=repo)
-
-        return Integration.objects.filter(repo=repo)
+        return repo.init_integrations()
 
     def list(self, request, *args, **kwargs):
         """
