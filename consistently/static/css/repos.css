@@ -135,6 +135,11 @@
 
 .badge-box {
     float: right;
+    padding-top: 1em;
+}
+
+.badge-box img {
+    cursor: pointer;
 }
 
 .badge-modal {
