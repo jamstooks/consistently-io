@@ -1,13 +1,15 @@
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.detail import DetailView
 from django.urls import reverse, reverse_lazy
 
 from github import Github
+import os
 
 from .models import Repository
 from .permissions import user_is_repo_admin, repo_is_public
@@ -93,6 +95,11 @@ class RepositoryDetailView(RepoDetailMixin, DetailView):
             self.request.user.is_authenticated and
             user_is_repo_admin(self.request.user, repo))
 
+        _context['absolute_url'] = "https://consistently.io%s" % (
+            reverse('repos:repo-detail', args=(repo.prefix, repo.name)))
+        _context['badge_url'] = "https://consistently.io%s" % (
+            reverse('repos:repo-badge', args=(repo.prefix, repo.name)))
+
         status_list = None
         if repo.latest_commit:
             status_list = IntegrationStatus.objects.filter(
@@ -135,3 +142,13 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         _context['main_js'] = settings.REACT_JS_PATH
         _context['main_css'] = settings.REACT_CSS_PATH
         return _context
+
+
+class RepositoryBadgeView(RepoDetailMixin, RedirectView):
+    """
+    Redirects to a Repository's badge image
+    """
+
+    def get_redirect_url(self, *args, **kwargs):
+        repo = self.get_object()
+        return static(repo.get_badge_path())

@@ -18,6 +18,10 @@ urlpatterns = [
         views.RepositoryDetailView.as_view(),
         name='repo-detail'),
     path(
+        'g/<prefix>/<name>/badge.svg',
+        views.RepositoryBadgeView.as_view(),
+        name='repo-badge'),
+    path(
         'g/<prefix>/<name>/conf/',
         views.RepositorySettingsView.as_view(),
         name='repo-settings')

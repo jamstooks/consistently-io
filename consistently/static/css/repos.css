@@ -133,6 +133,27 @@
   background-image: url("../img/waiting_icon.svg");
 }
 
+.badge-box {
+    float: right;
+}
+
+.badge-modal {
+    padding: 0;
+    margin: 0;
+}
+
+.badge-modal textarea {
+    width: 100%;
+    padding: .5rem;
+    height: 3.5rem;
+    font-size: .9rem;
+    color: #777;
+}
+
+.badge-modal h2 {
+    text-align: right;
+}
+
 /* Gotta do this better... */
 
 .repo-box-pass-icon {

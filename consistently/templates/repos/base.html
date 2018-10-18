@@ -34,7 +34,7 @@
       last commit 
       {{ repo.latest_commit.github_timestamp|naturaltime }}
       [ <a href="{{ repo.latest_commit.github_url }}">
-          {{ repo.latest_commit }}</a> ]
+          {{ repo.latest_commit.short_sha }}</a> ]
     {% else %}
       <a href="{{ repo.github_url }}">
         Awaiting new commit
