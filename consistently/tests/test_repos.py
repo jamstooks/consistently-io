@@ -179,9 +179,9 @@ class PermissionsTestCase(BaseTestCase):
 
 class BadgeViewTestCase(BaseTestCase):
 
-    def test_redirect(self):
+    def test_image_served(self):
         """
-        Ensure that the redirect works
+        Ensure that an image is returned with a no-cache header
         """
         self.url = reverse('repos:repo-badge',
                            kwargs={
@@ -190,4 +190,5 @@ class BadgeViewTestCase(BaseTestCase):
                            })
 
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 302)
+        self.assertTrue('no-cache' in response.get('Cache-Control'))
+        self.assertEqual(response.get('Content-Type'), 'image/svg+xml')
