@@ -4,9 +4,12 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
+from django.views.decorators.cache import never_cache
 from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.detail import DetailView
 from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
+
 
 from github import Github
 import os
@@ -144,6 +147,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         return _context
 
 
+@method_decorator(never_cache, name='dispatch')
 class RepositoryBadgeView(RepoDetailMixin, RedirectView):
     """
     Redirects to a Repository's badge image
