@@ -1,13 +1,18 @@
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
-from django.views.generic.base import TemplateView
+from django.views.decorators.cache import never_cache
+from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.detail import DetailView
 from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
+
 
 from github import Github
+import os
 
 from .models import Repository
 from .permissions import user_is_repo_admin, repo_is_public
@@ -70,11 +75,28 @@ class RepoDetailMixin(object):
         if not repo_is_public(repo, user=self.request.user):
             raise Http404
 
+        self.base_url = "https://%s" if self.request.is_secure() else "http://%s"
+        self.base_url = self.base_url % self.request.get_host()
+
         return repo
 
     def get_context_data(self, **kwargs):
         _context = super(RepoDetailMixin, self).get_context_data(**kwargs)
+
+        repo = _context['repo']
+
+        # add the prefix to the context
         _context['prefix'] = _context['repo'].prefix
+
+        # add badge links to the context
+
+        _context['absolute_url'] = "%s%s" % (
+            self.base_url,
+            reverse('repos:repo-detail', args=(repo.prefix, repo.name)))
+        _context['badge_url'] = "%s%s" % (
+            self.base_url,
+            reverse('repos:repo-badge', args=(repo.prefix, repo.name)))
+
         return _context
 
 
@@ -135,3 +157,17 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         _context['main_js'] = settings.REACT_JS_PATH
         _context['main_css'] = settings.REACT_CSS_PATH
         return _context
+
+
+@method_decorator(never_cache, name='dispatch')
+class RepositoryBadgeView(RepoDetailMixin, RedirectView):
+    """
+    Redirects to a Repository's badge image
+    """
+
+    def get_redirect_url(self, *args, **kwargs):
+        repo = self.get_object()
+
+        # path = "https://%s%s" if self.request.is_secure() else "http://%s%s"
+
+        return "%s%s" % (self.base_url, static(repo.get_badge_path()))

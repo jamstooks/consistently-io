@@ -1,0 +1,23 @@
+<h1>Badges</h1>
+
+
+<h2>Markdown</h2>
+<textarea>
+[![Deployment Goals]({{ badge_url }})]({{ absolute_url }})
+</textarea>
+
+<h2>Textile</h2>
+<textarea>
+!{{ badge_url }}(Deployment Goals)!:{{ absolute_url }}
+</textarea>
+
+<h2>HTML</h2>
+<textarea>
+<a href="{{ absolute_url }}"><img src="{{ badge_url }}" alt="Deployment Goals" /></a>
+</textarea>
+
+<h2>RST</h2>
+<textarea>
+.. image:: {{ badge_url }}
+    :target: {{ absolute_url }}
+</textarea>

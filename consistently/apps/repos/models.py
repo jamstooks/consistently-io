@@ -1,6 +1,9 @@
 from django.contrib.auth.models import User
 from django.db import models
 from model_utils.models import TimeStampedModel
+import os
+
+from .utils import get_badge_name
 
 
 class Repository(TimeStampedModel):
@@ -33,6 +36,18 @@ class Repository(TimeStampedModel):
     def github_url(self):
         return "https://github.com/%s/" % self.full_name
 
+    def get_badge_path(self):
+        """
+        Returns the badge filename for this repository
+        """
+        name = get_badge_name(None, None, 1)
+
+        if self.latest_commit:
+            counts = self.latest_commit.get_counts()
+            name = get_badge_name(**counts)
+
+        return os.path.join('img', 'badges', name)
+
     def init_integrations(self):
         """
         Creates integration objects for all available integration types
@@ -46,23 +61,18 @@ class Repository(TimeStampedModel):
 
         return self.integration_set.all()
 
-    def get_active_integrations(self, create=False):
+    def get_active_integrations(self):
         """
-        finds all the active integrtaions for a 
+        finds all the active integrtaions for this repo
+
+        returns an array of each integration's type instance
         """
 
-        from consistently.apps.integrations.models import INTEGRATION_TYPES
-        #  identify all active integrations for this repository
         active_integrations = []
-        for Klass in INTEGRATION_TYPES.values():
-            try:
-                i = Klass.objects.get(repo=self)
-                if i.is_active:
-                    active_integrations.append(i)
-            except Klass.DoesNotExist:
-                # there may be a few instances where new integrations
-                # haven't been created for the repo yet.
-                pass
+
+        for i in self.integration_set.filter(is_active=True):
+            active_integrations.append(i.type_instance)
+
         return active_integrations
 
 
@@ -76,7 +86,11 @@ class Commit(models.Model):
     github_timestamp = models.DateTimeField()
 
     def __str__(self):
-        return "%s (%s)" % (self.sha[:6], self.repo)
+        return "%s (%s)" % (self.short_sha, self.repo)
+
+    @property
+    def short_sha(self):
+        return self.sha[:6]
 
     def github_url(self):
         return "%scommit/%s/" % (self.repo.github_url, self.sha)
