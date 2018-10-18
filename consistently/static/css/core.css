@@ -24,9 +24,8 @@ strong {
   overflow: hidden;
   padding: 0 1em;
   margin: 0;
-  height: 50vh;
-  min-height: calc(100vh - 10rem);
-  /*min-height: .8vh;*/
+  min-height: calc(100vh - 10.5rem);
+  max-height: fit-content;
 }
 
 footer {
