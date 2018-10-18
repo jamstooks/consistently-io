@@ -45,6 +45,13 @@ h1 {
   padding-bottom: 0;
 }
 
+h2 {
+  font-size: 1.2em;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  color: #777;
+}
+
 .h1-icon-link {
   vertical-align: super;
   font-size: .7em;

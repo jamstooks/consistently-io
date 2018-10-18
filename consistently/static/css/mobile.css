@@ -66,4 +66,12 @@
     .repo-box-repo {
         padding: 0;
     }
+    
+    .badge-box {
+        display: block;
+        float: none;
+        text-align: right;
+        padding: 1em 1em 0 0;
+        margin: 0;
+    }
 }

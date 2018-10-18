@@ -6,12 +6,6 @@ from consistently.apps.repos.models import Repository, Commit
 from consistently.apps.integrations.tasks import queue_integration_tasks
 
 
-"""
-123234966
-017dd6d863e22b3e903d44857dd48ecd3ec87850
-"""
-
-
 class Command(BaseCommand):
     help = """
 Mimics the sending of a commit to GithubWebhookView
