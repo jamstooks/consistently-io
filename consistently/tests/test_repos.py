@@ -175,3 +175,19 @@ class PermissionsTestCase(BaseTestCase):
 
         # private repo
         self.assertFalse(permissions.repo_is_public(self.private_repo))
+
+
+class BadgeViewTestCase(BaseTestCase):
+
+    def test_redirect(self):
+        """
+        Ensure that the redirect works
+        """
+        self.url = reverse('repos:repo-badge',
+                           kwargs={
+                               'prefix': self.user.username,
+                               'name': self.repo.name
+                           })
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
