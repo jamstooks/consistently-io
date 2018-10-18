@@ -7,7 +7,9 @@
 - [ ] snackbar for updates
 - [ ] logging
 - [ ] contributing guide
-- [ ] Repo BADGES!! https://github.com/google/pybadges
+- [x] Repo BADGES!! https://github.com/google/pybadges
+ - [ ] confirm caching https://github.com/github/markup/issues/224
+- [ ] add license
 
 ## Performance
 
@@ -15,6 +17,7 @@
 - [ ] Throttling
 - [ ] Cache `HasRepoAccess` for a minute or two given the frequency of use
 - [ ] `django-pipeline` or `django-compressor` for css
+- [ ] query optimizations
 
 ## Down the road...
 
@@ -27,7 +30,7 @@
 - [ ] better icons... number icons can just use a font.
 - [ ] general search + quick search in profile
 - [ ] use git secret for webhooks
-- [ ] auto code formatting
+- [ ] auto code formatting w/ prettier
 - [ ] store and display the commit message
 
 ## Check error conditions

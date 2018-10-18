@@ -2,10 +2,10 @@ from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import PermissionDenied
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.views.decorators.cache import never_cache
-from django.views.generic.base import TemplateView, RedirectView
+from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
@@ -160,14 +160,18 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
 
 @method_decorator(never_cache, name='dispatch')
-class RepositoryBadgeView(RepoDetailMixin, RedirectView):
+class RepositoryBadgeView(RepoDetailMixin, View):
     """
-    Redirects to a Repository's badge image
+    Returns the badge svg image
+
+    Until I can change file-specific caching with whitenoise, this is it.
+    Would like this to be more efficient and redirect to CDN.
     """
 
-    def get_redirect_url(self, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         repo = self.get_object()
+        path = os.path.join(
+            settings.PROJECT_DIR, 'static', repo.get_badge_path())
 
-        # path = "https://%s%s" if self.request.is_secure() else "http://%s%s"
-
-        return "%s%s" % (self.base_url, static(repo.get_badge_path()))
+        with open(path, "rb") as f:
+            return HttpResponse(f.read(), content_type="image/svg+xml")
