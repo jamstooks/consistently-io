@@ -75,11 +75,28 @@ class RepoDetailMixin(object):
         if not repo_is_public(repo, user=self.request.user):
             raise Http404
 
+        self.base_url = "https://%s" if self.request.is_secure() else "http://%s"
+        self.base_url = self.base_url % self.request.get_host()
+
         return repo
 
     def get_context_data(self, **kwargs):
         _context = super(RepoDetailMixin, self).get_context_data(**kwargs)
+
+        repo = _context['repo']
+
+        # add the prefix to the context
         _context['prefix'] = _context['repo'].prefix
+
+        # add badge links to the context
+
+        _context['absolute_url'] = "%s%s" % (
+            self.base_url,
+            reverse('repos:repo-detail', args=(repo.prefix, repo.name)))
+        _context['badge_url'] = "%s%s" % (
+            self.base_url,
+            reverse('repos:repo-badge', args=(repo.prefix, repo.name)))
+
         return _context
 
 
@@ -97,11 +114,6 @@ class RepositoryDetailView(RepoDetailMixin, DetailView):
         _context['is_repo_admin'] = (
             self.request.user.is_authenticated and
             user_is_repo_admin(self.request.user, repo))
-
-        _context['absolute_url'] = "https://consistently.io%s" % (
-            reverse('repos:repo-detail', args=(repo.prefix, repo.name)))
-        _context['badge_url'] = "https://consistently.io%s" % (
-            reverse('repos:repo-badge', args=(repo.prefix, repo.name)))
 
         status_list = None
         if repo.latest_commit:
@@ -156,8 +168,6 @@ class RepositoryBadgeView(RepoDetailMixin, RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         repo = self.get_object()
 
-        path = "https://%s%s" if self.request.is_secure() else "http://%s%s"
+        # path = "https://%s%s" if self.request.is_secure() else "http://%s%s"
 
-        return path % (
-            self.request.META['HTTP_HOST'],
-            static(repo.get_badge_path()))
+        return "%s%s" % (self.base_url, static(repo.get_badge_path()))
