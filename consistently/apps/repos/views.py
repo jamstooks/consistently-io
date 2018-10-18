@@ -151,4 +151,9 @@ class RepositoryBadgeView(RepoDetailMixin, RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         repo = self.get_object()
-        return static(repo.get_badge_path())
+
+        path = "https://%s%s" if self.request.is_secure() else "http://%s%s"
+
+        return path % (
+            self.request.META['HTTP_HOST'],
+            static(repo.get_badge_path()))
