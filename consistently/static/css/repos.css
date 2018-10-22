@@ -1,3 +1,12 @@
+a.commit {
+    border: 1px solid #c8e1ff;
+    background-color: #f1f8ff;
+    padding: 0 .3em;
+    border-radius: 2px;
+    text-decoration: none;
+    font-family: 'Roboto Mono', monospace;
+}
+
 .repo-box {
     display: flex;
     justify-content: space-between;
