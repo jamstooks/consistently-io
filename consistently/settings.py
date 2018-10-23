@@ -206,8 +206,7 @@ WEBHOOK_URL = reverse_lazy('api:github-webhook')
 # Celery
 # ==============================================================================
 
-CELERY_BROKER_URL = os.environ.get(
-    'REDIS_URL', 'amqp://guest:guest@localhost//')
+CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://localhost')
 CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL', 'django-db')
 
 CELERY_TASK_ALWAYS_EAGER = os.environ.get('CELERY_ALWAYS_EAGER', False)
@@ -217,10 +216,11 @@ CELERY_TASK_SERIALIZER = 'json'
 django_heroku.settings(locals(), databases=not DEBUG)
 
 # ==============================================================================
-# Google Analytics
+# Google
 # ==============================================================================
 
 GA_PROPERTY_ID = os.environ.get('GA_PROPERTY_ID', None)
+GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)
 
 # ==============================================================================
 # Sentry

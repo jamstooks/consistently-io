@@ -6,23 +6,29 @@ from ...models import IntegrationStatus
 from unittest import mock
 
 
-class HTMLTestCase(BaseTestCase):
+class HTMLBaseCase(BaseTestCase):
 
-    def test_integration_type_assignment(self):
-        html = HTMLValidation.objects.create(
+    def setUp(self):
+        super(HTMLBaseCase, self).setUp()
+        self.html = HTMLValidation.objects.create(
             repo=self.repo,
             is_active=False,
             url_to_validate="http://www.example.com",
             deployment_delay="1"
         )
-        self.assertEqual(html.integration_type, 'html')
 
 
-class SerializerTestCase(BaseTestCase):
+class HTMLTestCase(HTMLBaseCase):
+
+    def test_integration_type_assignment(self):
+        self.assertEqual(self.html.integration_type, 'html')
+
+
+class SerializerTestCase(HTMLBaseCase):
 
     def test_object_serialization(self):
 
-        serializer = HTMLValidationSerializer(instance=self.repo)
+        serializer = HTMLValidationSerializer(instance=self.html)
         self.assertCountEqual(
             serializer.data.keys(),
             ['is_active', 'url_to_validate',  'deployment_delay'])
@@ -81,16 +87,7 @@ def fake_get(*args, **kwargs):
 
 
 @mock.patch('requests.get', fake_get)
-class WorkerTestCase(BaseTestCase):
-
-    def setUp(self):
-        super(WorkerTestCase, self).setUp()
-        self.html = HTMLValidation.objects.create(
-            repo=self.repo,
-            is_active=False,
-            url_to_validate="https://valid.url/",
-            deployment_delay="1"
-        )
+class WorkerTestCase(HTMLBaseCase):
 
     def test_run(self):
 

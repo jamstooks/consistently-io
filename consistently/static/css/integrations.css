@@ -26,11 +26,15 @@
     background-image: url('../img/integrations/coveralls_icon.svg');
 }
 
+.pagespeed-integration-background {
+    background-image: url('../img/integrations/pagespeed.webp');
+}
+
 .integration-logo.active:after {
     content: url('../img/check_icon.svg');
     width: 35%;
     height: 35%;
     float: right;
-    margin: -95% 5% 0 0;
+    margin: -98% 5% 0 0;
     display: inline;
 }

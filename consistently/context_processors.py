@@ -13,6 +13,7 @@ def react_vars(request):
 
 
 def github_avatar(request):
+    " @todo - cache this "
 
     if request.user.is_authenticated:
         base_url = "https://avatars0.githubusercontent.com/u/%s?s=36&v=4"
