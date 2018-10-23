@@ -30,9 +30,22 @@
   background-position: center center;
 }
 
-.status-box.waiting .status-box-icon {
+.status-box.waiting>.status-box-icon {
   background-color: grey;
   background-image: url("../img/waiting_icon.svg");
+}
+
+.status-box-icon.waiting:after {
+    content: url('../img/loading_icon.svg');
+    /*background-color: red;*/
+    width: 25%;
+    height: 25%;
+    margin: 0 auto;
+    padding: 0 0 25%;
+    overflow: hidden;
+    /*line-height: 1;*/
+    animation: animatedBackground 3s linear infinite;
+    transform-origin: center center;
 }
 
 .status-box.failed .status-box-icon {

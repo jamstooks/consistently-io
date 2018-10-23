@@ -3,6 +3,7 @@ from django.urls import reverse
 
 from .base import BaseTestCase
 from consistently.apps.repos import permissions
+from consistently.apps.integrations.models import IntegrationStatus
 from consistently.apps.integrations.types.html.models import HTMLValidation
 
 
@@ -68,13 +69,32 @@ class RepoDetailTestCase(BaseTestCase):
                                'prefix': self.user.username,
                                'name': self.repo.name
                            })
+        self.html = HTMLValidation.objects.create(repo=self.repo)
+        self.status = IntegrationStatus.objects.create(
+            commit=self.commit,
+            integration=self.html,
+            status=IntegrationStatus.STATUS_CHOICES.passed)
 
     def test_list(self):
         """
-            We should have a list of connected repositories
+            We should have a list of integration status objects
         """
         response = self.client.get(self.url)
         self.assertEqual(response.context['repo'], self.repo)
+        self.assertEqual(response.context['status_list'].count(), 1)
+        # page shouldn't reload when no waiting integrations
+        self.assertNotContains(
+            response,
+            "setTimeout(function(){ location.reload(); }, 15000);")
+
+        self.status.status = IntegrationStatus.STATUS_CHOICES.waiting
+        self.status.save()
+        self.commit.get_counts(force_recalculate=True)
+        response = self.client.get(self.url)
+        # page should reload when waiting on integrations
+        self.assertContains(
+            response,
+            "setTimeout(function(){ location.reload(); }, 15000);")
 
         # test inactive repo for 404
         url = reverse(

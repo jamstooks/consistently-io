@@ -7,14 +7,14 @@
   <div class="badge-box">
     <img id="badge" src="{% static repo.get_badge_path %}" alt="badge" />
   </div>
-
+  
   {{ block.super }}
 
   <div class="center-column narrow">
       {% for status in status_list %}
           <div class="status-box {{ status.status }}">
               <div class="status-box-logo {{ status.integration.integration_type }}-integration-background"></div>
-              <div class="status-box-icon"></div>
+              <div class="status-box-icon {{ status.status }}"></div>
               <div class="status-box-detail">
                   {% if status.value %}
                     {{ status.value|title }}
@@ -38,6 +38,16 @@
 
 {% block js %}
   {{ block.super }}
+  
+  {% if repo.latest_commit and repo.latest_commit.waiting_count %}
+  <script>
+    /**
+     * Reload every 15 seconds when waiting
+     */
+    setTimeout(function(){ location.reload(); }, 15000);
+  </script>
+  {% endif %}
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.13.2/tingle.min.js"></script>
   <script>
     // instanciate new modal
@@ -51,24 +61,6 @@
     
     // set content
     modal.setContent($('#modal').html());
-    
-    // add a button
-    // modal.addFooterBtn('Button label', 'tingle-btn tingle-btn--primary', function() {
-    //     // here goes some logic
-    //     modal.close();
-    // });
-    
-    // // add another button
-    // modal.addFooterBtn('Dangerous action !', 'tingle-btn tingle-btn--danger', function() {
-    //     // here goes some logic
-    //     modal.close();
-    // });
-    
-    // open modal
-    // modal.open();
-    
-    // close modal
-    // modal.close();
     
     $("#badge").on('click', function() {
       console.log('here');
