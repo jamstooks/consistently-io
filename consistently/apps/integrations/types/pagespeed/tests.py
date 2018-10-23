@@ -153,7 +153,7 @@ class WorkerTestCase(PageSpeedBaseCase):
         status.refresh_from_db()
         self.assertEqual(
             status.status, IntegrationStatus.STATUS_CHOICES.failed)
-        self.assertEqual(status.value, "74 / 100")
+        self.assertEqual(status.value, "Desktop: 74%")
 
         # test with a connection error to google
         with_settings[0]['fields']['url'] = 'https://broken.site'
@@ -172,7 +172,7 @@ class WorkerTestCase(PageSpeedBaseCase):
         status.refresh_from_db()
         self.assertEqual(
             status.status, IntegrationStatus.STATUS_CHOICES.passed)
-        self.assertEqual(status.value, "91 / 100")
+        self.assertEqual(status.value, "Desktop: 91%")
 
         # test with a mobile strategy
         with_settings[0]['fields']['url'] = 'https://pass.site'
@@ -183,4 +183,4 @@ class WorkerTestCase(PageSpeedBaseCase):
         status.refresh_from_db()
         self.assertEqual(
             status.status, IntegrationStatus.STATUS_CHOICES.passed)
-        self.assertEqual(status.value, "91 / 100")
+        self.assertEqual(status.value, "Mobile: 91%")

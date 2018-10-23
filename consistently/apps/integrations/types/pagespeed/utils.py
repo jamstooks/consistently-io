@@ -51,6 +51,6 @@ def get_pagespeed_score(status):
         status.status = IntegrationStatus.STATUS_CHOICES.passed
     else:
         status.status = IntegrationStatus.STATUS_CHOICES.failed
-    status.value = "%d / 100" % score
+    status.value = "%s: %d%%" % (strategy.capitalize(), score)
     status.details = result['pageStats']
     status.save()
