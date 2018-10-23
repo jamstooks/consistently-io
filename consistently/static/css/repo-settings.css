@@ -42,12 +42,6 @@
   margin: none;
 }
 
-/*.config, .grid-container {*/
-
-/*    transition: all .5s linear;*/
-
-/*}*/
-
 .config {
   margin: 0;
   display: none;
@@ -60,7 +54,7 @@
 }
 
 .grid-container {
-  padding: 1em;
+  padding: 0;
   margin: 0;
   width: 100%;
   overflow: hidden;
@@ -75,7 +69,7 @@
 }
 
 .integration-grid {
-  padding: 0;
+  padding: 1em;
   margin: 0;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;

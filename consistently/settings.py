@@ -217,10 +217,11 @@ CELERY_TASK_SERIALIZER = 'json'
 django_heroku.settings(locals(), databases=not DEBUG)
 
 # ==============================================================================
-# Google Analytics
+# Google
 # ==============================================================================
 
 GA_PROPERTY_ID = os.environ.get('GA_PROPERTY_ID', None)
+GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)
 
 # ==============================================================================
 # Sentry

@@ -55,7 +55,8 @@ class Integration(TimeStampedModel):
 
     @property
     def notes(self):
-        raise NotImplementedError
+        " markdown to appear below the config form "
+        return ""
 
     def get_serializer_class(self):
         from consistently.apps.api.serializers import BasicIntegrationSerializer
@@ -126,8 +127,10 @@ class IntegrationStatus(TimeStampedModel):
 from .types.html.models import HTMLValidation
 from .types.travis.models import Travis
 from .types.coveralls.models import Coveralls
+from .types.pagespeed.models import PageSpeed
 
 INTEGRATION_TYPES = OrderedDict()
 INTEGRATION_TYPES['html'] = HTMLValidation
 INTEGRATION_TYPES['travis'] = Travis
 INTEGRATION_TYPES['coveralls'] = Coveralls
+INTEGRATION_TYPES['pagespeed'] = PageSpeed

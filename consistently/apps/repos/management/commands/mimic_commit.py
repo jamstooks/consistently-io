@@ -8,7 +8,9 @@ from consistently.apps.integrations.tasks import queue_integration_tasks
 
 class Command(BaseCommand):
     help = """
-Mimics the sending of a commit to GithubWebhookView
+Mimics the sending of a commit to GithubWebhookView.
+
+If the commit already exists, it will be deleted and recreated.
 
 Will trigger worker, so you should have celery running.
     """
@@ -24,7 +26,13 @@ Will trigger worker, so you should have celery running.
 
         repo = Repository.objects.get(github_id=github_id)
 
-        print("creating Commit")
+        try:
+            commit = Commit.objects.get(sha=sha)
+            print("deleting existing commit")
+            commit.delete()
+        except:
+            print("creating commit")
+
         commit = Commit.objects.create(
             repo=repo,
             sha=sha,
