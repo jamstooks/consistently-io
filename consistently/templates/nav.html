@@ -10,13 +10,11 @@
     </a>
   </div>
   <div onclick="toggleMenu('right-menu');" class="nav-right">
-    <span>
       {% if user.is_authenticated %}
         <img src="{{ avatar }}" class="avatar" alt="{{ user.username }}" />
       {% else %}
         <span class="octicon octicon-mark-github"></span>
       {% endif %}
-    </span>
   </div>
 </div>
 

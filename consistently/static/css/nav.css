@@ -24,6 +24,10 @@
     cursor: pointer;
 }
 
+.nav-right span, .nav-left img, .nav-right img {
+    margin: 0 1rem;
+}
+
 .logo {
     height: 2.7em;
 }

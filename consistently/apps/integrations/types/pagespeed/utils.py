@@ -18,12 +18,16 @@ def get_pagespeed_score(status):
 
     with_settings = json.loads(status.with_settings)
 
+    strategy = 'desktop'
+    if with_settings[0]['fields']['use_mobile_strategy']:
+        strategy = 'mobile'
+
     response = requests.get(
         BASE_URL,
         params={
             'url': with_settings[0]['fields']['url'],
             'key': settings.GOOGLE_API_KEY,
-            # 'strategy': 'mobile',
+            'strategy': strategy
         })
 
     if response.status_code != requests.codes.ok:

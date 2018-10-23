@@ -9,6 +9,7 @@ class PageSpeed(Integration):
     Custom settings for the GooglePageSpeed Integrations
     """
     url = models.URLField(blank=True, null=True)
+    use_mobile_strategy = models.BooleanField(default=False)
     deployment_delay = models.PositiveIntegerField(
         blank=True,
         null=True,
@@ -20,6 +21,14 @@ class PageSpeed(Integration):
     @property
     def description(self):
         return "**PageSpeed Insights** - service provided by [Google](https://developers.google.com/speed/pagespeed/insights/)"
+
+    @property
+    def notes(self):
+        return """
+Set the **deployment delay** to the time it takes to deploy a commit.
+
+The default strategy is **desktop**.
+"""
 
     def get_serializer_class(self):
         from .serializer import PageSpeedSerializer

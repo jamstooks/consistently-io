@@ -11,6 +11,7 @@
  - [ ] confirm caching https://github.com/github/markup/issues/224
 - [ ] add license
 - [ ] should users be able to set numeric goals, like coverage percentage?
+- [ ] branch support for better CI
 
 ## Performance
 
