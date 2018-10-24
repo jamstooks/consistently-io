@@ -228,7 +228,7 @@ GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)
 
 SENTRY_DSN = os.environ.get('SENTRY_DSN', None)
 
-if SENTRY_DSN and not DEBUG:
+if SENTRY_DSN:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
 

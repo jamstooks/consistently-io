@@ -116,9 +116,7 @@ class IntegrationStatus(TimeStampedModel):
 
     def __str__(self):
         return "%s (%s)[%s]" % (
-            self._meta.verbose_name.title(),
-            self.commit,
-            self.status)
+            self.integration.integration_type, self.commit, self.status)
 
 
 """

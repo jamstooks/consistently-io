@@ -90,7 +90,6 @@ class SerializerTestCase(PageSpeedBaseCase):
 # Mock request.get for the worker tests
 def fake_get(*args, **kwargs):
 
-    # print(kwargs['params'])
     url = kwargs['params']['url']
 
     if 'error.site' in url:
@@ -159,7 +158,12 @@ class WorkerTestCase(PageSpeedBaseCase):
         with_settings[0]['fields']['url'] = 'https://broken.site'
         status.with_settings = json.dumps(with_settings)
         status.save()
-        self.ps.run(status)
+        with self.assertLogs(level='ERROR') as cm:
+            self.ps.run(status)
+        self.assertEqual(
+            cm.records[0].getMessage(),
+            "Pagespeed error response"
+        )
         status.refresh_from_db()
         self.assertEqual(
             status.status, IntegrationStatus.STATUS_CHOICES.failed)
