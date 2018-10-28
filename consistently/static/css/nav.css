@@ -15,10 +15,6 @@
     padding: 0 .3em;
 }
 
-.nav-right .octicon {
-    margin: 0;
-}
-
 .nav-right:hover, .nav-left:hover {
     background-color: #eee;
     cursor: pointer;

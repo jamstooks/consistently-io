@@ -1,7 +1,7 @@
 {% load static %}
 
 <div class="nav">
-  <div onclick="toggleMenu('left-menu');" class="nav-left">
+  <div  data-target="left-menu" class="nav-left menu-link">
     <img src="{% static 'img/menu_icon.svg' %}" class="nav-img" alt="menu">
   </div>
   <div class="center">
@@ -9,7 +9,7 @@
       <img src="{% static 'img/logo.svg' %}" class="logo" alt="consistently.io">
     </a>
   </div>
-  <div onclick="toggleMenu('right-menu');" class="nav-right">
+  <div data-target="right-menu" class="nav-right menu-link">
       {% if user.is_authenticated %}
         <img src="{{ avatar }}" class="avatar" alt="{{ user.username }}" />
       {% else %}
