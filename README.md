@@ -7,6 +7,8 @@
 
 [https://consistently.io](https://consistently.io)
 
+**Dog Food:** https://consistently.io/g/jamstooks/consistently-io/
+
 Measure deployment goals.
 
 ## What is it?
