@@ -1,4 +1,4 @@
-celery==4.2.1
+celery==5.2.2
 Django==2.1.2
 django-celery-results==1.0.1
 django-heroku==0.3.1
