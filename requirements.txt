@@ -5,7 +5,7 @@ django-heroku==0.3.1
 django-model-utils==3.1.1
 djangorestframework==3.8.2
 gunicorn==19.9.0
-ipython==6.5.0
+ipython==7.16.3
 pybadges==1.0.1
 PyGithub==1.39
 redis==2.10.6
